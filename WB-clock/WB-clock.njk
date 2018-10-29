@@ -1,0 +1,17 @@
+<div class="wbclock">
+	<div>
+		<div class="wbclock__zones local">
+			<div class="city">{{ config.localCityName }}</div>
+			<div class="time light">{{ timeData.localTime }}{% if config.timeFormat == 12 %}<span class="ampm">{{ timeData.ampm }}</span>{% endif %}
+			</div>
+		</div>
+		{% for city in timeData.cities %}
+		<div class="wbclock__zones">
+			<div class="city">{{ city.name }}</div>
+			<div class="time">{{ city.time }}{% if config.timeFormat == 12 %}<span class="ampm">{{ city.ampm }}</span>{% endif %}
+			</div>
+		</div>
+		{% endfor %}
+	</div>
+	<div class="wbclock__date">{{ timeData.date }}</div>
+</div>

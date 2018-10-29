@@ -1,0 +1,40 @@
+.top.bar {
+  position: absolute;
+  width: 100%;
+  top: -60px;
+  left: -60px;
+  padding: 60px;
+  background-image: linear-gradient(rgba(0, 0, 0, 0.6), rgba(130, 130, 130, 0)); }
+
+.wbclock {
+  position: relative;
+  text-align: left;
+  width: 100%; }
+
+.wbclock__zones {
+  float: left;
+  min-width: 200px;
+  max-width: 250px; }
+  .wbclock__zones .city {
+    font-size: 27px;
+    text-transform: uppercase;
+    opacity: .6;
+    margin-bottom: 10px; }
+  .wbclock__zones .time {
+    font-size: 27px; }
+  .wbclock__zones .ampm {
+    font-size: 20px;
+    padding-left: 3px; }
+
+.wbclock .local {
+  margin-right: 60px; }
+  .wbclock .local .time {
+    font-size: 72px;
+    line-height: 1; }
+    .wbclock .local .time .ampm {
+      font-size: 43px; }
+
+.wbclock__date {
+  position: relative;
+  top: 15px;
+  clear: both; }

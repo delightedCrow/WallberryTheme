@@ -1,0 +1,46 @@
+.bottom.bar {
+  position: absolute;
+  width: 100%;
+  bottom: -60px;
+  left: -60px;
+  padding: 60px;
+  background-image: linear-gradient(rgba(0, 0, 0, 0), black);
+}
+
+.weather__current {
+  text-align: left;
+  float: left;
+  width: 40%; }
+  .weather__current .current__temperature {
+    font-size: 72px;
+    padding-bottom: 15px; }
+    .weather__current .current__temperature i {
+      font-size: 60px; }
+    .weather__current .current__temperature .wi-current {
+      padding-left: 10px; }
+  .weather__current .weather__description {
+    font-size: 28px; }
+
+.weather__weeklyforecast {
+  text-align: right;
+  float: right; }
+  .weather__weeklyforecast .forecast:first-child {
+    margin-left: 0px; }
+  .weather__weeklyforecast .forecast {
+    margin-left: 40px;
+    text-align: center;
+    font-size: 22px;
+    float: left; }
+    .weather__weeklyforecast .forecast .forecast__icon {
+      font-size: 40px;
+      margin: 10px 0px; }
+    .weather__weeklyforecast .forecast .forecast__day {
+      text-transform: uppercase;
+      font-size: 28px; }
+    .weather__weeklyforecast .forecast .forecast__rainchance i {
+      position: relative;
+      padding-right: 5px;
+      top: 2px; }
+    .weather__weeklyforecast .forecast .forecast__highlow {
+      position: relative;
+      top: -7px; }
