@@ -16,6 +16,7 @@ Module.register("WallberryTheme", {
 	},
 
 	photoData: null,
+	fetchTimer: null,
 
 	getStyles: function() {
 		return [
@@ -64,9 +65,10 @@ Module.register("WallberryTheme", {
 			if (this.status == 200) {
 				mod.processPhoto(JSON.parse(this.responseText));
 			}
+			mod.fetchTimer = setTimeout(() => {mod.fetchPhoto()}, mod.config.updateInterval);
 		});
 		req.addEventListener("error", function() {
-			Log.info("Error Fetching photo: ", this.responseText);
+			Log.error("Error Fetching photo: ", this.responseText);
 		});
 		req.open("GET", url);
 		req.setRequestHeader('Accept-Version', 'v1');
@@ -83,9 +85,7 @@ Module.register("WallberryTheme", {
 		}
 
 		p.authorName = photoData.user.name;
-
 		this.photoData = p;
 		this.updateDom(2000);
-		setTimeout(() => {this.fetchPhoto()}, this.config.updateInterval);
 	}
 });
