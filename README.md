@@ -4,14 +4,23 @@ The `WallberryTheme` module re-themes [MagicMirror²](https://github.com/MichMic
 
 The WallberryTheme also comes packaged with two companion modules for displaying the time (`WB-clock`) and weather (`WB-weather`).
 
- ** REQUIRED API KEYS:**
+ **REQUIRED API KEYS:**
 
 - A (free) Unsplash API key is required and can be obtained from [Unsplash.com](https://unsplash.com/developers).
 - For the weather module, a (free) DarkSky API key is required and can be obtained at [DarkSky.net](https://darksky.net/dev).
 
+## Screenshots
+<p align="center">
+<img style="flat: left; width: 50%;" src="screenshots/wb-screen1.jpg">
+<img style="float: left; width: 50%;" src="screenshots/wb-screen2.jpg">
+</p>
+
 ## Using the module
 
-To use this module and its companion modules, add them to the modules array in the `config/config.js` file:
+To use this module and its companion modules:
+1.  Copy the `WallberryTheme` folder to your `MagicMirror/modules` directory
+2.  Add the modules to the modules array in the `config/config.js` file like in the following example:
+
 ````javascript
 modules: [
 	// Base WallberryTheme adds new font, styles, and a rotating background image pulled from Unsplash.com
