@@ -11,7 +11,7 @@ Module.register("WB-weather", {
     latitude: "", // REQUIRED
     longitude: "", // REQUIRED
 
-    units: config.units, // what measurement units to use (SI, US, etc)
+    units: "auto", // what measurement units to use (SI, US, auto)
     roundTemp: true, // round temperature to nearest integer
     language: config.language, // what language to localize for
 		daysToForecast: 4, // how many days to include in upcoming forecast
