@@ -11,7 +11,7 @@ Module.register("WallberryTheme", {
 		collections: "", //comma-separated list of Unsplash collection ids
 
 		updateInterval: 300 * 1000, // 5 min
-		orientation: "portrait", // desired photo orientation - can be portrait, landscape, or square
+		orientation: "portrait", // desired photo orientation - can be portrait, landscape, or squarish
 		resizeForScreen: true // resize image for screen - otherwise image is displayed at full height/width
 	},
 
