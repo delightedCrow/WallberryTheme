@@ -23,11 +23,11 @@ module.exports = NodeHelper.create({
 			url: wurl,
 			method: 'GET'
 		}, (error, response, body) => {
-			this.sendSocketNotification("DATA_AVAILABLE", {
-        error: error,
-        response: response,
-        data: body
-      });
+      if (error) {
+        this.sendSocketNotification("NETWORK_ERROR", error);
+      } else {
+        this.sendSocketNotification("DATA_AVAILABLE", response);
+      }
 		});
 	},
 

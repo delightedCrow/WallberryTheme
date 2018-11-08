@@ -23,11 +23,8 @@ Module.register("WB-weather", {
 
 	wdata: {
 		maxForecastPossible: 8, // DarkSky only allows for up to 8 days
-		weather: null,
 		fetchError: null,
 		fetchResponse: null,
-		loading: true,
-		apiKeyError: false
 	},
 
 	precipIcons: { // icons for displaying type of precipitation
@@ -40,7 +37,8 @@ Module.register("WB-weather", {
 		loading: "WLOADING",
 		invalidKey: "API_KEY_MISSING",
 		today: "TODAY",
-		serverError: "SERVER_ERROR"
+		connectionError: "CONNECTION_ERROR",
+		error: "ERROR"
 	},
 
 	getTranslations: function() {
@@ -61,11 +59,17 @@ Module.register("WB-weather", {
 		return "WB-weather.njk"
 	},
 
+	getTemplateData: function() {
+		return {
+			config: this.config,
+			weather: this.getWeatherDataForTemplate(),
+			status: this.getStatusDataForTemplate()
+		};
+	},
+
 	start: function() {
 		Log.info("Starting module: " + this.name);
-		if (this.config.darkSkyApiKey == null) {
-			this.wdata.apiKeyError = true;
-		} else {
+		if (this.config.darkSkyApiKey) {
 			this.sendSocketNotification("SET_CONFIG", this.config);
 			this.scheduleUpdate(this.config.initialLoadDelay);
 		}
@@ -81,94 +85,90 @@ Module.register("WB-weather", {
 
 	socketNotificationReceived: function(notification, payload) {
 		switch(notification) {
+			case "NETWORK_ERROR":
+				// this is likely due to connection issue - we should retry in a bit
+				Log.error("Error reaching DarkSky: ", payload);
+				this.wdata.fetchError = payload;
+				this.scheduleUpdate();
+				break;
+
 			case "DATA_AVAILABLE":
-				if (payload.error) {
-					Log.error("Error reaching DarkSky: ", payload.error);
-					this.wdata.fetchError = payload.error;
+					// code 200 means all went well - we have weather data
+				if (payload.statusCode == 200) {
 					this.scheduleUpdate();
-				} else if (payload.response.statusCode == 200) {
-					this.wdata.weather = JSON.parse(payload.data);
-					this.scheduleUpdate();
-				} else if (payload.response.statusCode == 403) {
-					this.wdata.apiKeyError = true;
 				} else {
-					this.wdata.fetchResponse = payload.response;
+					// if we get anything other than a 200 from DarkSky it's probably a config error or something else the user will have to restart MagicMirror to address - we shouldn't schedule anymore updates
+					Log.error("DarkSky Error: ", payload);
 				}
-
-				Log.log(payload.response);
-				Log.log(payload.error);
-				this.wdata.loading = false;
-				this.updateDom();
-
-				Log.log("Weather GOT DATA: ", this.wdata.weather);
+				this.wdata.fetchResponse = payload;
 				break;
 		}
+
+		this.updateDom();
 	},
 
-	getTemplateData: function() {
-
-		return {
-      config: this.config,
-      weather: this.getWeatherDataForTemplate(),
-			status: this.getStatusDataForTemplate()
-    };
-	},
-
+	// this handles getting the translated error/loading messages for the template
 	getStatusDataForTemplate: function() {
 		var status = {}
-		status.loadingMessage = null;
-		if (this.wdata.loading) {
+		// if fetchResponse is null then we haven't gotten data yet - we're still loading (unless we have an empty API key - then we'll never load anything!)
+		if (this.config.darkSkyApiKey && !this.wdata.fetchResponse) {
 			status.loadingMessage = this.translate(this.translationKey.loading);
+			return status;
 		}
 
-		if (this.wdata.apiKeyError) {
+		// DarkSky status code of 403 or a missing API key results in INVALID KEY error
+		if (this.config.darkSkyApiKey == null || this.wdata.fetchResponse.statusCode == 403) {
 			status.error = this.translate(this.translationKey.invalidKey);
+			return status;
 		}
 
-		if (this.wdata.response && this.wdata.response.statusCode != 200) {
-			status.error = this.translate(this.translationKey.error) +
-			this.wdata.response.body;
+		// DarkSky sent us an error of some kind, probably user supplied an incorrect config parameter
+		if (this.wdata.fetchResponse.statusCode != 200) {
+			let errorObj = JSON.parse(this.wdata.fetchResponse.body);
+			status.error = this.translate(this.translationKey.error) + errorObj.error;
+			return status;
 		}
 
+		// Looks like we got a network error
 		if (this.wdata.fetchError != null) {
-			status.error = this.translate(this.translationKey.serverError);
+			status.error = this.translate(this.translationKey.connectionError);
+			return status;
 		}
-
-		return status;
 	},
 
+	// handles processing all the weather data for the template
 	getWeatherDataForTemplate: function() {
 		// if we don't have weather data we can just return now
-		if (this.wdata.weather == null) {
+		if (this.wdata.fetchResponse == null || this.wdata.fetchResponse.statusCode != 200) {
 			return null;
 		}
 
+		let darksky = JSON.parse(this.wdata.fetchResponse.body);
 		var weather = {};
     weather.forecast = [];
-    Log.log(this.wdata.weather);
 
-    weather.currentTemp = Math.round(this.wdata.weather.currently.temperature);
-		if (this.wdata.weather.minutely != null) {
-			weather.currentDescription = this.wdata.weather.minutely.summary;
+    weather.currentTemp = Math.round(darksky.currently.temperature);
+		if (darksky.minutely != null) {
+			weather.currentDescription = darksky.minutely.summary;
 		} else {
-			weather.currentDescription = this.wdata.weather.hourly.summary
+			weather.currentDescription = darksky.hourly.summary
 		}
 
-		weather.currentIcon = this.wdata.weather.currently.icon;
+		weather.currentIcon = darksky.currently.icon;
 
     for (var i=0; i<this.config.daysToForecast; i++) {
       var day = {};
-      let data = this.wdata.weather.daily.data[i];
-      day.highTemp = Math.round(data.temperatureHigh);
-      day.lowTemp = Math.round(data.temperatureLow);
-      day.precipProbability = Math.round(data.precipProbability * 100); // x100 to convert from decimal to percentage
-      day.precipType = data.hasOwnProperty("precipType") ? this.precipIcons[data.precipType] : this.precipIcons["default"];
-      day.icon = data.icon;
+      let forecast = darksky.daily.data[i];
+      day.highTemp = Math.round(forecast.temperatureHigh);
+      day.lowTemp = Math.round(forecast.temperatureLow);
+      day.precipProbability = Math.round(forecast.precipProbability * 100); // x100 to convert from decimal to percentage
+      day.precipType = forecast.hasOwnProperty("precipType") ? this.precipIcons[forecast.precipType] : this.precipIcons["default"];
+      day.icon = forecast.icon;
 
-      var date = new Date(data.time*1000); // not sure about the x1000 here
+      var date = new Date(forecast.time*1000); // not sure about the x1000 here
       day.dayLabel = moment.weekdaysShort(date.getDay());
 
-      // LOL
+      // changing the day label to "today" instead of day of the week
       if (i === 0) {
         day.dayLabel = this.translate(this.translationKey.today);
       }
