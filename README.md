@@ -60,13 +60,13 @@ modules: [
 
 ## Configuration options
 
-The following properties of `WallberryTheme` can be configured. For more information on how to configure the clock and weather modules see their individual README files.
+The following properties of `WallberryTheme` can be configured. For more information on how to configure the [WB-clock](https://github.com/delightedCrow/WallberryTheme/tree/master/WB-clock) and [WB-weather](https://github.com/delightedCrow/WallberryTheme/tree/master/WB-weather) modules see their individual README files.
 
 
-| Option                       | Description
-| ---------------------------- | -----------
-| `unsplashAccessKey`          | Your Unsplash API access key. Sign up for free at [https://unsplash.com/developers](https://unsplash.com/developers). Demo accounts are allowed `50 API requests per hour`. <br><br>  This value is **REQUIRED**
-| `collections`                | A comma-separated list of Unsplash collection IDs that photos should be pulled from. Collection IDs can be found in the URL of the collection, shown in the highlighted part of this screenshot: <img src="screenshots/unsplash-collection-id.png">  <br><br> **Example:** `"1538150,162213"` <br> **Default value:** `""` (no collection, theme will use a random Unsplash photo)
-| `updateInterval`             | How often the photo should change (Milliseconds). <br><br> **Default value:** `300000` (5 minutes)
-| `orientation`                | What screen orientation photos should be optimized for. <br><br> **Possible values:** `portrait`, `landscape`, or `squarish` <br> **Default value:** `portrait`
-| `resizeForScreen`            | Whether a photo should be resized to fit the screen. <br><br> **Possible values:** `true` (resize photo) or `false` (use photo at full dimensions) <br> **Default value:** `true`
+| Option                      | Type    | Description
+| ----------------------------|---------| ----------------
+| `unsplashAccessKey`         | String  | Your Unsplash API access key. Sign up for free at [https://unsplash.com/developers](https://unsplash.com/developers). Demo accounts are allowed `50 API requests per hour`. <br><br>  This value is **REQUIRED**
+| `collections`               | String  | A comma-separated list of Unsplash collection IDs that photos should be pulled from. Collection IDs can be found in the URL of the collection, shown in the highlighted part of this screenshot: <img src="screenshots/unsplash-collection-id.png">  <br><br> **Example:** `"1538150,162213"` <br> **Default value:** `""` (no collection, theme will use a random Unsplash photo)
+| `updateInterval`            | Number  | How often the photo should change (Milliseconds). <br><br> **Default value:** `300000` (5 minutes)
+| `orientation`               | String  | What screen orientation photos should be optimized for. <br><br> **Possible values:** `"portrait"`, `"landscape"`, or `"squarish"` <br> **Default value:** `"portrait"`
+| `resizeForScreen`           | Boolean | Whether a photo should be resized to fit the screen. <br><br> **Possible values:** `true` (resize photo) or `false` (use photo at full dimensions) <br> **Default value:** `true`
