@@ -23,6 +23,28 @@ body {
 	z-index: 10;
 }
 
+.wb-unsplash-bg-error {
+	position: absolute;
+	bottom: -5px;
+	text-align: center;
+  width: 100%;
+	z-index: 10;
+}
+.wb-unsplash-bg-error .wb-error-reason {
+  text-transform: uppercase;
+  padding: 0px 5px;
+  margin-bottom: -8px;
+}
+
+.wb-unsplash-bg-error .wb-error-info {
+  font-size: 20px;
+}
+
+.wb-unsplash-bg-error .wb-error-icon {
+  color: red;
+  padding: 0px 5px;
+}
+
   /* rubik-300 - latin */
 @font-face {
   font-family: 'Rubik';

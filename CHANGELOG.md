@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 - This Changelog file :)
+- WallberryTheme now displays error messages if something goes wrong when fetching the Unsplash background.
 
 ## 1.0.0 - 2018-11-7
 ### Added

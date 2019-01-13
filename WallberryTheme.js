@@ -16,11 +16,13 @@ Module.register("WallberryTheme", {
 	},
 
 	photoData: null,
+	photoError: null,
 	fetchTimer: null,
 
 	getStyles: function() {
 		return [
-			this.file("css/WallberryTheme.css")
+			this.file("css/WallberryTheme.css"),
+			"font-awesome5.css"
 		];
 	},
 
@@ -32,18 +34,22 @@ Module.register("WallberryTheme", {
 	getDom: function() {
 		var wrapper = document.createElement('div');
 
-		if (this.photoData == null) {
-			return wrapper;
+		// set up the markup for our image if we have one
+		if (this.photoData != null) {
+			const photoHTML = `
+			<img src="${this.photoData.url}">
+			<div class="wb-unsplash-bg-attribution">Photo by ${this.photoData.authorName} on Unsplash</div>
+			`;
+			wrapper.innerHTML = photoHTML;
+
+		// markup in case of error message
+		} else if (this.photoError != null) {
+			const errorHTML = `<div class="wb-unsplash-bg-error">
+			<div class="wb-error-reason"><i class="wb-error-icon fa fa-exclamation-triangle" aria-hidden="true"></i>Error Loading Background<i class="wb-error-icon fa fa-exclamation-triangle" aria-hidden="true"></i></div>
+			<div class="wb-error-info">${this.photoError}</div>
+			</div>`;
+			wrapper.innerHTML = errorHTML;
 		}
-
-		var image = document.createElement('img');
-		var attribution = document.createElement('div');
-
-		image.src = this.photoData.url;
-		attribution.innerText = 'Photo by ' + this.photoData.authorName + ' on Unsplash';
-		attribution.className = "wb-unsplash-bg-attribution";
-		wrapper.appendChild(image);
-		wrapper.appendChild(attribution);
 		return wrapper;
 	},
 
@@ -59,24 +65,38 @@ Module.register("WallberryTheme", {
 				"&h=" + window.innerHeight;
 		}
 
+		this.photoError = null;
 		var req = new XMLHttpRequest();
 		var mod = this;
+
 		req.addEventListener("load", function() {
+			const unsplashData = JSON.parse(this.responseText);
 			if (this.status == 200) {
-				mod.processPhoto(JSON.parse(this.responseText));
+				mod.processPhoto(unsplashData);
+			} else if ("errors" in unsplashData) {
+				mod.processError(`The Unsplash API returned the error "${unsplashData["errors"].join(", ")}"`);
 			}
-			mod.fetchTimer = setTimeout(() => {mod.fetchPhoto()}, mod.config.updateInterval);
 		});
+
 		req.addEventListener("error", function() {
-			Log.error("Error Fetching photo: ", this.responseText);
+			// most likely an internet connection issue
+			mod.processError("Could not connect to the Unsplash server.");
 		});
+
 		req.open("GET", url);
 		req.setRequestHeader('Accept-Version', 'v1');
 		req.send();
 	},
 
+	processError: function(errorText) {
+		// TODO: might want to add support for translating error messages
+		this.photoError = errorText;
+		this.updateDom();
+		this.fetchTimer = setTimeout(() => {this.fetchPhoto()}, this.config.updateInterval);
+	},
+
 	processPhoto: function(photoData) {
-		Log.info("Got PHOTO data: ", photoData);
+		Log.info("Got Unsplash photo data: ", photoData);
 		var p = {};
 		if (this.config.resizeForScreen) {
 			p.url = photoData.urls.custom;
@@ -87,5 +107,6 @@ Module.register("WallberryTheme", {
 		p.authorName = photoData.user.name;
 		this.photoData = p;
 		this.updateDom(2000);
+		this.fetchTimer = setTimeout(() => {this.fetchPhoto()}, this.config.updateInterval);
 	}
 });

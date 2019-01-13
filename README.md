@@ -60,7 +60,7 @@ modules: [
 
 ## Configuration options
 
-The following properties of `WallberryTheme` can be configured. For more information on how to configure the [WB-clock](https://github.com/delightedCrow/WallberryTheme/tree/master/WB-clock) and [WB-weather](https://github.com/delightedCrow/WallberryTheme/tree/master/WB-weather) modules see their individual README files.
+The following properties of `WallberryTheme` can be configured. For more information on how to configure the [WB-clock](WB-clock/README.md) and [WB-weather](WB-weather/README.md) modules see their individual README files.
 
 
 | Option                      | Type    | Description
@@ -70,3 +70,7 @@ The following properties of `WallberryTheme` can be configured. For more informa
 | `updateInterval`            | Number  | How often the photo should change (Milliseconds). <br><br> **Default value:** `300000` (5 minutes)
 | `orientation`               | String  | What screen orientation photos should be optimized for. <br><br> **Possible values:** `"portrait"`, `"landscape"`, or `"squarish"` <br> **Default value:** `"portrait"`
 | `resizeForScreen`           | Boolean | Whether a photo should be resized to fit the screen. <br><br> **Possible values:** `true` (resize photo) or `false` (use photo at full dimensions) <br> **Default value:** `true`
+
+## Changelog
+
+Visit the [Changelog file](CHANGELOG.md) to see the latest changes to the project :)
