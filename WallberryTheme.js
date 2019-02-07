@@ -12,7 +12,8 @@ Module.register("WallberryTheme", {
 
 		updateInterval: 300 * 1000, // 5 min
 		orientation: "portrait", // desired photo orientation - can be portrait, landscape, or squarish
-		resizeForScreen: true // resize image for screen - otherwise image is displayed at full height/width
+		resizeForScreen: true, // resize image for screen - otherwise image is displayed at full height/width
+		backgroundOpacity: 1 // between 0 (black background) and 1 (visible opaque background)
 	},
 
 	photoData: null,
@@ -37,7 +38,7 @@ Module.register("WallberryTheme", {
 		// set up the markup for our image if we have one
 		if (this.photoData != null) {
 			const photoHTML = `
-			<img src="${this.photoData.url}">
+			<img style="opacity: ${this.config.backgroundOpacity};" src="${this.photoData.url}">
 			<div class="wb-unsplash-bg-attribution">Photo by ${this.photoData.authorName} on Unsplash</div>
 			`;
 			wrapper.innerHTML = photoHTML;
