@@ -13,7 +13,8 @@ Module.register("WallberryTheme", {
 		updateInterval: 300 * 1000, // 5 min
 		orientation: "portrait", // desired photo orientation - can be portrait, landscape, or squarish
 		resizeForScreen: true, // resize image for screen - otherwise image is displayed at full height/width
-		backgroundOpacity: 1 // between 0 (black background) and 1 (visible opaque background)
+		backgroundOpacity: 1, // between 0 (black background) and 1 (visible opaque background)
+		smartDimOn: false // VERY BETA lol
 	},
 
 	photoData: null,
@@ -34,14 +35,21 @@ Module.register("WallberryTheme", {
 
 	getDom: function() {
 		var wrapper = document.createElement('div');
-
 		// set up the markup for our image if we have one
 		if (this.photoData != null) {
-			const photoHTML = `
-			<img style="opacity: ${this.config.backgroundOpacity};" src="${this.photoData.url}">
+			let img = document.createElement('img');
+			img.crossOrigin = "Anonymous"; // otherwise we'll get a security error if we attempt to draw this image on the canvas later
+			img.style.opacity = this.config.backgroundOpacity;
+			let mod = this;
+			if (this.config.smartDimOn) {
+				img.onload = function(){mod.setSmartOpacity(this);};
+			}
+			img.src = this.photoData.url;
+
+			wrapper.innerHTML = `
 			<div class="wb-unsplash-bg-attribution">Photo by ${this.photoData.authorName} on Unsplash</div>
 			`;
-			wrapper.innerHTML = photoHTML;
+			wrapper.appendChild(img);
 
 		// markup in case of error message
 		} else if (this.photoError != null) {
@@ -109,5 +117,45 @@ Module.register("WallberryTheme", {
 		this.photoData = p;
 		this.updateDom(2000);
 		this.fetchTimer = setTimeout(() => {this.fetchPhoto()}, this.config.updateInterval);
-	}
+	},
+
+	setSmartOpacity: function(img) {
+		// this function thanks to ToniTornado's SO answer:
+		// https://stackoverflow.com/questions/13762864/image-dark-light-detection-client-sided-script
+
+		var fuzzy = 0.1;
+		// create canvas
+		var canvas = document.createElement("canvas");
+		canvas.width = img.width;
+		canvas.height = img.height;
+
+		var ctx = canvas.getContext("2d");
+		ctx.drawImage(img,0,0);
+
+		var imageData = ctx.getImageData(0,0,canvas.width,canvas.height);
+		var data = imageData.data;
+		var r,g,b, max_rgb;
+		var light = 0, dark = 0;
+
+		for(var x = 0, len = data.length; x < len; x+=4) {
+				r = data[x];
+				g = data[x+1];
+				b = data[x+2];
+
+				max_rgb = Math.max(Math.max(r, g), b);
+				if (max_rgb < 128)
+						dark++;
+				else
+						light++;
+		}
+
+		var dl_diff = ((light - dark) / (img.width*img.height));
+		if (dl_diff + fuzzy < 0){
+			Log.info("Dark Image"); /* Dark. */
+			img.style.opacity = 1;
+		} else {
+			Log.info("Light Image");  /* Not dark. */
+			img.style.opacity = 0.8;
+		}
+	},
 });
