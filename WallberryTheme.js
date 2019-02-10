@@ -18,6 +18,7 @@ Module.register("WallberryTheme", {
 	},
 
 	photoData: null,
+	photoElement: null,
 	photoError: null,
 	fetchTimer: null,
 
@@ -36,20 +37,11 @@ Module.register("WallberryTheme", {
 	getDom: function() {
 		var wrapper = document.createElement('div');
 		// set up the markup for our image if we have one
-		if (this.photoData != null) {
-			let img = document.createElement('img');
-			img.crossOrigin = "Anonymous"; // otherwise we'll get a security error if we attempt to draw this image on the canvas later
-			img.style.opacity = this.config.backgroundOpacity;
-			let mod = this;
-			if (this.config.smartDimOn) {
-				img.onload = function(){mod.setSmartOpacity(this);};
-			}
-			img.src = this.photoData.url;
-
+		if (this.photoElement != null) {
 			wrapper.innerHTML = `
 			<div class="wb-unsplash-bg-attribution">Photo by ${this.photoData.authorName} on Unsplash</div>
 			`;
-			wrapper.appendChild(img);
+			wrapper.appendChild(this.photoElement);
 
 		// markup in case of error message
 		} else if (this.photoError != null) {
@@ -58,6 +50,8 @@ Module.register("WallberryTheme", {
 			<div class="wb-error-info">${this.photoError}</div>
 			</div>`;
 			wrapper.innerHTML = errorHTML;
+		} else {
+			wrapper.innerHTML = '<div class="wb-unsplash-bg-attribution">Loading background photo...</div>';
 		}
 		return wrapper;
 	},
@@ -115,8 +109,20 @@ Module.register("WallberryTheme", {
 
 		p.authorName = photoData.user.name;
 		this.photoData = p;
-		this.updateDom(2000);
-		this.fetchTimer = setTimeout(() => {this.fetchPhoto()}, this.config.updateInterval);
+
+		let img = document.createElement('img');
+		img.style.opacity = this.config.backgroundOpacity;
+		img.onload = () => {
+			if (this.config.smartDimOn) {
+				this.setSmartOpacity(img);
+			}
+			this.updateDom(2000);
+			this.fetchTimer = setTimeout(() => {this.fetchPhoto()}, this.config.updateInterval);
+		};
+
+		img.crossOrigin = "Anonymous"; // otherwise we'll get a security error if we attempt to draw this image on the canvas later
+		img.src = this.photoData.url;
+		this.photoElement = img;
 	},
 
 	setSmartOpacity: function(img) {
