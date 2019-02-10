@@ -4,7 +4,6 @@
   bottom: -60px;
   left: -60px;
   padding: 60px;
-  background-image: linear-gradient(rgba(0, 0, 0, 0), black);
 }
 
 .weather__current {

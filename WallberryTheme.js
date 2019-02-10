@@ -14,7 +14,8 @@ Module.register("WallberryTheme", {
 		orientation: "portrait", // desired photo orientation - can be portrait, landscape, or squarish
 		resizeForScreen: true, // resize image for screen - otherwise image is displayed at full height/width
 		backgroundOpacity: 1, // between 0 (black background) and 1 (visible opaque background)
-		smartDimOn: false // VERY BETA lol
+		smartDimOn: false, // VERY BETA lol
+		backgroundFadeOn: true
 	},
 
 	photoData: null,
@@ -27,6 +28,10 @@ Module.register("WallberryTheme", {
 			this.file("css/WallberryTheme.css"),
 			"font-awesome5.css"
 		];
+	},
+
+	getScripts: function() {
+		return ["colorHelpers.js"]
 	},
 
 	start: function() {
@@ -43,6 +48,8 @@ Module.register("WallberryTheme", {
 			`;
 			wrapper.appendChild(this.photoElement);
 
+			if (this.config.backgroundFadeOn)
+				this.setBackgroundFades();
 		// markup in case of error message
 		} else if (this.photoError != null) {
 			const errorHTML = `<div class="wb-unsplash-bg-error">
@@ -54,6 +61,13 @@ Module.register("WallberryTheme", {
 			wrapper.innerHTML = '<div class="wb-unsplash-bg-attribution">Loading background photo...</div>';
 		}
 		return wrapper;
+	},
+
+	setBackgroundFades: function() {
+		let topBar = document.getElementsByClassName("region top bar")[0];
+		topBar.style.background = "linear-gradient(rgba(0, 0, 0, 0.6), rgba(130, 130, 130, 0))";
+		let bottomBar = document.getElementsByClassName("region bottom bar")[0];
+		bottomBar.style.background = "linear-gradient(rgba(0, 0, 0, 0), black)";
 	},
 
 	fetchPhoto: function() {
@@ -114,7 +128,7 @@ Module.register("WallberryTheme", {
 		img.style.opacity = this.config.backgroundOpacity;
 		img.onload = () => {
 			if (this.config.smartDimOn) {
-				this.setSmartOpacity(img);
+				img.style.opacity = WBColor.isImageLight(img) ? 0.85 : 1;
 			}
 			this.updateDom(2000);
 			this.fetchTimer = setTimeout(() => {this.fetchPhoto()}, this.config.updateInterval);
@@ -123,45 +137,5 @@ Module.register("WallberryTheme", {
 		img.crossOrigin = "Anonymous"; // otherwise we'll get a security error if we attempt to draw this image on the canvas later
 		img.src = this.photoData.url;
 		this.photoElement = img;
-	},
-
-	setSmartOpacity: function(img) {
-		// this function thanks to ToniTornado's SO answer:
-		// https://stackoverflow.com/questions/13762864/image-dark-light-detection-client-sided-script
-
-		var fuzzy = 0.1;
-		// create canvas
-		var canvas = document.createElement("canvas");
-		canvas.width = img.width;
-		canvas.height = img.height;
-
-		var ctx = canvas.getContext("2d");
-		ctx.drawImage(img,0,0);
-
-		var imageData = ctx.getImageData(0,0,canvas.width,canvas.height);
-		var data = imageData.data;
-		var r,g,b, max_rgb;
-		var light = 0, dark = 0;
-
-		for(var x = 0, len = data.length; x < len; x+=4) {
-				r = data[x];
-				g = data[x+1];
-				b = data[x+2];
-
-				max_rgb = Math.max(Math.max(r, g), b);
-				if (max_rgb < 128)
-						dark++;
-				else
-						light++;
-		}
-
-		var dl_diff = ((light - dark) / (img.width*img.height));
-		if (dl_diff + fuzzy < 0){
-			Log.info("Dark Image"); /* Dark. */
-			img.style.opacity = 1;
-		} else {
-			Log.info("Light Image");  /* Not dark. */
-			img.style.opacity = 0.8;
-		}
-	},
+	}
 });
