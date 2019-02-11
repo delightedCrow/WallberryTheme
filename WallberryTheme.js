@@ -4,6 +4,7 @@
  * By JSC (@delightedCrow)
  * MIT Licensed.
  */
+
 Module.register("WallberryTheme", {
 	defaults: {
 		unsplashAccessKey: "", // REQUIRED
@@ -64,10 +65,19 @@ Module.register("WallberryTheme", {
 	},
 
 	setBackgroundFades: function() {
+		let color = WBColor.rgb2Hsv(WBColor.hex2Rgb(this.photoData.color));
+		let	light = WBColor.hsv2Rgb({h:color.h, s:20, v:20});
+		let dark = WBColor.hsv2Rgb({h:color.h, s:10, v:5});
+
 		let topBar = document.getElementsByClassName("region top bar")[0];
-		topBar.style.background = "linear-gradient(rgba(0, 0, 0, 0.6), rgba(130, 130, 130, 0))";
+		topBar.style.background = `linear-gradient(rgba(${dark.r}, ${dark.g}, ${dark.b}, 0.7), rgba(${light.r}, ${light.g}, ${light.b}, 0))`;
 		let bottomBar = document.getElementsByClassName("region bottom bar")[0];
-		bottomBar.style.background = "linear-gradient(rgba(0, 0, 0, 0), black)";
+		bottomBar.style.background = `linear-gradient(rgba(${light.r}, ${light.g}, ${light.b}, 0), black)`;
+		let darkBackground = `rgb(${dark.r}, ${dark.g}, ${dark.b})`;
+		let html = document.getElementsByTagName('html')[0];
+		let body = document.getElementsByTagName('body')[0];
+		body.style.backgroundColor = darkBackground;
+		html.style.backgroundColor = darkBackground;
 	},
 
 	fetchPhoto: function() {
@@ -122,6 +132,7 @@ Module.register("WallberryTheme", {
 		}
 
 		p.authorName = photoData.user.name;
+		p.color = photoData.color;
 		this.photoData = p;
 
 		let img = document.createElement('img');
