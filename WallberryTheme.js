@@ -15,8 +15,9 @@ Module.register("WallberryTheme", {
 		orientation: "portrait", // desired photo orientation - can be portrait, landscape, or squarish
 		resizeForScreen: true, // resize image for screen - otherwise image is displayed at full height/width
 		backgroundOpacity: 1, // between 0 (black background) and 1 (visible opaque background)
-		smartDimOn: false, // VERY BETA lol
-		backgroundFadeOn: true
+		brightImageOpacity: 0.85, // between 0 (black background) and 1 (visible opaque background), only used when autoDimOn is true
+		autoDimOn: true, // automatically darken bright images
+		addBackgroundFade: ["top", "bottom"] // adds fades for the top and bottom bar regions (leave an empty list to remove fades)
 	},
 
 	photoData: null,
@@ -48,9 +49,7 @@ Module.register("WallberryTheme", {
 			<div class="wb-unsplash-bg-attribution">Photo by ${this.photoData.authorName} on Unsplash</div>
 			`;
 			wrapper.appendChild(this.photoElement);
-
-			if (this.config.backgroundFadeOn)
-				this.setBackgroundFades();
+			this.setBackgroundTint();
 		// markup in case of error message
 		} else if (this.photoError != null) {
 			const errorHTML = `<div class="wb-unsplash-bg-error">
@@ -64,15 +63,25 @@ Module.register("WallberryTheme", {
 		return wrapper;
 	},
 
-	setBackgroundFades: function() {
+	setBackgroundTint: function() {
+		// Unsplash sends us a color swatch for the image
 		let color = WBColor.rgb2Hsv(WBColor.hex2Rgb(this.photoData.color));
-		let	light = WBColor.hsv2Rgb({h:color.h, s:20, v:20});
-		let dark = WBColor.hsv2Rgb({h:color.h, s:10, v:5});
+		// using the hue from this color we can generate a new light shade for our gradient
+		let	light = WBColor.hsv2Rgb({h:color.h, s:20, v:30});
+		// and a new dark shade for a gradient
+		let dark = WBColor.hsv2Rgb({h:color.h, s:40, v:7});
+		// TODO: the s/v values above are hardcoded because they seemed to work well in many cases, but it might be nice to have these be configurable
 
-		let topBar = document.getElementsByClassName("region top bar")[0];
-		topBar.style.background = `linear-gradient(rgba(${dark.r}, ${dark.g}, ${dark.b}, 0.7), rgba(${light.r}, ${light.g}, ${light.b}, 0))`;
-		let bottomBar = document.getElementsByClassName("region bottom bar")[0];
-		bottomBar.style.background = `linear-gradient(rgba(${light.r}, ${light.g}, ${light.b}, 0), black)`;
+		if (this.config.addBackgroundFade.includes("top")) {
+			let topBar = document.getElementsByClassName("region top bar")[0];
+			topBar.style.background = `linear-gradient(rgba(${dark.r}, ${dark.g}, ${dark.b}, 0.7), rgba(${light.r}, ${light.g}, ${light.b}, 0))`;
+		}
+		if (this.config.addBackgroundFade.includes("bottom")) {
+			let bottomBar = document.getElementsByClassName("region bottom bar")[0];
+			bottomBar.style.background = `linear-gradient(rgba(${light.r}, ${light.g}, ${light.b}, 0), black)`;
+		}
+
+		// setting the html/body background colors to the dark shade gives a much richer color to the image when it becomes transparent. We set the image to be transparent when we want to dim it (because the black background then comes through), but having a pure black background can cause the image to look greyish and washed out.
 		let darkBackground = `rgb(${dark.r}, ${dark.g}, ${dark.b})`;
 		let html = document.getElementsByTagName('html')[0];
 		let body = document.getElementsByTagName('body')[0];
@@ -138,14 +147,15 @@ Module.register("WallberryTheme", {
 		let img = document.createElement('img');
 		img.style.opacity = this.config.backgroundOpacity;
 		img.onload = () => {
-			if (this.config.smartDimOn) {
-				img.style.opacity = WBColor.isImageLight(img) ? 0.85 : 1;
+			if (this.config.autoDimOn) {
+				img.style.opacity = WBColor.isImageLight(img) ?
+					this.config.brightImageOpacity : this.config.backgroundOpacity;
 			}
 			this.updateDom(2000);
 			this.fetchTimer = setTimeout(() => {this.fetchPhoto()}, this.config.updateInterval);
 		};
 
-		img.crossOrigin = "Anonymous"; // otherwise we'll get a security error if we attempt to draw this image on the canvas later
+		img.crossOrigin = "Anonymous"; // otherwise we'll get a security error if we attempt to draw this image on the canvas later (when we check if it's dark or light)
 		img.src = this.photoData.url;
 		this.photoElement = img;
 	}

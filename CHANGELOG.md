@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 ### Added
 - the option `backgroundOpacity` in WallberryTheme to set the brightness of the background.
+- the `autoDimOn` option in WallberryTheme, which automatically detects light images and darkens them to the value set in the `brightImageOpacity` option. This can help with readability, increasing contrast between the background image and the text an top of it.
+- the `addBackgroundFade` option, which allows the user to turn on fading background gradients for the top and bottom regions of the magic mirror, increasing readability.
+- both `autoDimOn` and `addBackgroundFade` use the color information sent by Unsplash to tint their backgrounds to the same general hue as the background image, causing them to blend better with most images.
+
+### Changed
+- WB-weather and WB-clock no longer have their own background gradients set in CSS (since the main WallberryTheme module handles this now).
 
 ## 1.1.0 - 2019-1-21
 ### Changed

@@ -15,6 +15,20 @@ The WallberryTheme also comes packaged with two companion modules for displaying
 <img style="float: left; width: 50%;" src="screenshots/wb-screen2.jpg">
 </p>
 
+## Now With More Options For Bright Images!
+
+WallberryTheme has new options for dealing with light text on bright background images!
+
+- The `addBackgroundFade` option allows you to add soft gradient backgrounds to the top and bottom regions of your magic mirror, providing more contrast for the modules in those regions. These gradients use Unsplash's color data to automatically shift to the general color hue of the photo, so they blend better with the image.
+
+- The `autoDimOn` feature auto-detects bright images and automatically dims them, ensuring bright images don't wash out your text and dark images remain vibrant.
+
+**No background fade, auto dim set to off:**
+<img src="screenshots/autodim-off.png">
+
+**With addBackgroundFade and autoDimOn (on their default settings):**
+<img src="screenshots/autodim-on.png">
+
 ## Using the module
 
 To use this module and its companion modules:
@@ -23,38 +37,38 @@ To use this module and its companion modules:
 
 ````javascript
 modules: [
-	// Base WallberryTheme adds new font, styles, and a rotating background image pulled from Unsplash.com
-	{
-		module: "WallberryTheme",
-		position: "fullscreen_below", // Required Position
-		config: {
-			unsplashAccessKey: "Your Unsplash API Key", // REQUIRED
-			collections: "2589108"
-		}
-	},
-	// WB-clock adds local time (Optional Module)
-	{
-		module: "WallberryTheme/WB-clock",
-		position: "top_bar", // highly suggest using top_bar position
-		config: {
-			localCityName: "Seattle", // optional
-			otherCities: [
-				{name: "DC", timezone: "US/Eastern"}, // optional
-				{name: "Anchorage", timezone: "US/Alaska"} //optional
-			]
-		}
-	},
-	// WB-weather adds weather via DarkSky API (Optional Module)
-	{
-		module: "WallberryTheme/WB-weather",
-		position: "bottom_bar",  // Highly suggested location
-		config: {
-			// See "Configuration options" for more information.
-			darkSkyApiKey: "Your DarkSky API key",
-			latitude:   47.603230,
-			longitude: -122.330276
-		}
-	}
+  // Base WallberryTheme adds new font, styles, and a rotating background image pulled from Unsplash.com
+  {
+    module: "WallberryTheme",
+    position: "fullscreen_below", // Required Position
+    config: {
+      unsplashAccessKey: "Your Unsplash API Key", // REQUIRED
+      collections: "2589108" // optional - leave empty for a random photo
+    }
+  },
+  // WB-clock adds local time (Optional Module)
+  {
+    module: "WallberryTheme/WB-clock",
+    position: "top_bar", // highly suggest using top_bar position
+    config: {
+      localCityName: "Seattle", // optional
+      otherCities: [
+      	{name: "DC", timezone: "US/Eastern"}, // optional
+      	{name: "Anchorage", timezone: "US/Alaska"} // optional
+      ]
+    }
+  },
+  // WB-weather adds weather via DarkSky API (Optional Module)
+  {
+    module: "WallberryTheme/WB-weather",
+    position: "bottom_bar",  // Highly suggested location
+    config: {
+      // See "Configuration options" for more information.
+      darkSkyApiKey: "Your DarkSky API key", // REQUIRED
+      latitude:   47.603230, // REQUIRED
+      longitude: -122.330276 // REQUIRED
+    }
+  }
 ]
 ````
 
@@ -71,7 +85,16 @@ The following properties of `WallberryTheme` can be configured. For more informa
 | `orientation`               | String  | What screen orientation photos should be optimized for. <br><br> **Possible values:** `"portrait"`, `"landscape"`, or `"squarish"` <br> **Default value:** `"portrait"`
 | `resizeForScreen`           | Boolean | Whether a photo should be resized to fit the screen. <br><br> **Possible values:** `true` (resize photo) or `false` (use photo at full dimensions) <br> **Default value:** `true`
 | `backgroundOpacity`         | Number  | Controls the darkness of the background photo. <br><br> **Possible values:** Any number from `0.0` (black screen) to `1` (fully bright image)<br> **E.G.**: `0.5` would be the background at half brightness<br> **Default value:** `1`
+| `brightImageOpacity`        | Number  | Controls the darkness of bright photos (determined by `autoDimOn`). Only used when `autoDimOn` is `true`. <br><br> **Possible values:** Any number from `0.0` (black screen) to `1` (fully bright image)<br> **Default value:** `0.85`
+| `autoDimOn`                 | Boolean | Automatically darkens bright photos to the value set by `brightImageOpacity`. <br><br> **Possible values:** `true` (on) or `false` (off) <br>**Default value:** `true`
+| `addBackgroundFade`         | Array   | Adds darker gradient backgrounds to the top bar region and/or bottom bar regions of MagicMirror (helps with readability for bright or busy background images). <br><br> **Possible values:** `"top"` will add a gradient background to the top bar region, `"bottom"` will add a gradient background to the bottom bar region. Set to an empty list to remove all gradients.  <br>**Default value:** `["top", "bottom"]`
 
 ## Changelog
 
 Visit the [Changelog file](CHANGELOG.md) to see the latest changes to the project :)
+
+## Attributions & Special Thanks
+
+- Thanks to the magnificent MagicMirror² community, y'all are creative and awesome <3
+- The light/dark detection functionality in [colorHelpers.js](colorHelpers.js) was taken from this wonderful [StackOverflow answer by ToniTornado](https://stackoverflow.com/questions/13762864/image-dark-light-detection-client-sided-script), and you can check out the [jsFiddle for it here](http://jsfiddle.net/s7Wx2/).
+- The color conversion functions in [colorHelpers.js](colorHelpers.js) were taken from the [colorsys](https://github.com/netbeast/colorsys) library by netbeast, and they saved me a great deal of time <3.
