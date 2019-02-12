@@ -111,6 +111,9 @@ Module.register("WallberryTheme", {
 				mod.processPhoto(unsplashData);
 			} else if ("errors" in unsplashData) {
 				mod.processError(`The Unsplash API returned the error "${unsplashData["errors"].join(", ")}"`);
+			} else {
+				mod.processError(`Unsplash Error: ${this.status}, ${this.statusText}`);
+				Log.error("Unsplash Error: ", this.responseText);
 			}
 		});
 
