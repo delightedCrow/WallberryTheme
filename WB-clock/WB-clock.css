@@ -1,11 +1,3 @@
-.top.bar {
-  position: absolute;
-  width: 100%;
-  top: -60px;
-  left: -60px;
-  padding: 60px;
-}
-
 .wbclock {
   position: relative;
   text-align: left;

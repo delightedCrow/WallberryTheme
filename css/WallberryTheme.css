@@ -9,8 +9,17 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
-.WallberryTheme .background {
+.wbfade {
+  position: absolute;
+  width: 100%;
+  min-height: 250px;
+}
 
+.topfade {
+  top: 0px;
+}
+.bottomfade {
+  bottom: 0px;
 }
 
 .light {

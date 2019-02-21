@@ -41,48 +41,30 @@ Module.register("WallberryTheme", {
 		this.fetchPhoto();
 	},
 
-	getDom: function() {
-		var wrapper = document.createElement('div');
-		// set up the markup for our image if we have one
-		if (this.photoElement != null) {
-			wrapper.innerHTML = `
-			<div class="wb-unsplash-bg-attribution">Photo by ${this.photoData.authorName} on Unsplash</div>
-			`;
-			wrapper.appendChild(this.photoElement);
-			this.setBackgroundTint();
-		// markup in case of error message
-		} else if (this.photoError != null) {
-			const errorHTML = `<div class="wb-unsplash-bg-error">
-			<div class="wb-error-reason"><i class="wb-error-icon fa fa-exclamation-triangle" aria-hidden="true"></i>Error Loading Background<i class="wb-error-icon fa fa-exclamation-triangle" aria-hidden="true"></i></div>
-			<div class="wb-error-info">${this.photoError}</div>
-			</div>`;
-			wrapper.innerHTML = errorHTML;
-		} else {
-			wrapper.innerHTML = '<div class="wb-unsplash-bg-attribution">Loading background photo...</div>';
-		}
-		return wrapper;
+	getTemplate: function() {
+		return "WallberryTheme.njk"
 	},
 
-	setBackgroundTint: function() {
-		// Unsplash sends us a color swatch for the image
-		let color = WBColor.rgb2Hsv(WBColor.hex2Rgb(this.photoData.color));
-		// using the hue from this color we can generate a new light shade for our gradient
-		let	light = WBColor.hsv2Rgb({h:color.h, s:20, v:30});
-		// and a new dark shade for a gradient
-		let dark = WBColor.hsv2Rgb({h:color.h, s:40, v:7});
-		// TODO: the s/v values above are hardcoded because they seemed to work well in many cases, but it might be nice to have these be configurable
+	getTemplateData: function() {
+		return {
+			config: this.config,
+			photoElement: this.photoElement,
+			photoData: this.photoData,
+			photoError: this.photoError,
+			setBackgroundTint: this.setBackgroundTint,
+			getHeight: this.getFadeHeight
+		};
+	},
 
-		if (this.config.addBackgroundFade.includes("top")) {
-			let topBar = document.getElementsByClassName("region top bar")[0];
-			topBar.style.background = `linear-gradient(rgba(${dark.r}, ${dark.g}, ${dark.b}, 0.7), rgba(${light.r}, ${light.g}, ${light.b}, 0))`;
-		}
-		if (this.config.addBackgroundFade.includes("bottom")) {
-			let bottomBar = document.getElementsByClassName("region bottom bar")[0];
-			bottomBar.style.background = `linear-gradient(rgba(${light.r}, ${light.g}, ${light.b}, 0), black)`;
-		}
+	getFadeHeight: function(regionClassName) {
+		// we auto-adjust the height of the background fades to be at least the height of the top bar region and bottom bar regions, in case they're bigger than the 250px min height we set in the css
+		let region = document.getElementsByClassName(regionClassName)[0];
+		return region.clientHeight + 70; // +70 for margin+padding
+	},
 
+	setBackgroundTint: function(tint) {
 		// setting the html/body background colors to the dark shade gives a much richer color to the image when it becomes transparent. We set the image to be transparent when we want to dim it (because the black background then comes through), but having a pure black background can cause the image to look greyish and washed out.
-		let darkBackground = `rgb(${dark.r}, ${dark.g}, ${dark.b})`;
+		let darkBackground = `rgb(${tint.r}, ${tint.g}, ${tint.b})`;
 		let html = document.getElementsByTagName('html')[0];
 		let body = document.getElementsByTagName('body')[0];
 		body.style.backgroundColor = darkBackground;
@@ -143,16 +125,20 @@ Module.register("WallberryTheme", {
 			p.url = photoData.urls.full;
 		}
 
+		// Unsplash sends us a color swatch for the image
+		p.color = WBColor.rgb2Hsv(WBColor.hex2Rgb(photoData.color));
+		// using the hue from this color we can generate a new light shade for our gradients for our fades
+		p.light = WBColor.hsv2Rgb({h:p.color.h, s:20, v:30});
+		p.dark = WBColor.hsv2Rgb({h:p.color.h, s:40, v:7});
+		// TODO: the s/v values above are hardcoded because they seemed to work well in many cases, but it might be nice to have these be configurable
 		p.authorName = photoData.user.name;
-		p.color = photoData.color;
 		this.photoData = p;
 
 		let img = document.createElement('img');
 		img.style.opacity = this.config.backgroundOpacity;
 		img.onload = () => {
 			if (this.config.autoDimOn) {
-				img.style.opacity = WBColor.isImageLight(img) ?
-					this.config.brightImageOpacity : this.config.backgroundOpacity;
+				this.photoData.isLight = WBColor.isImageLight(img);
 			}
 			this.updateDom(2000);
 			this.fetchTimer = setTimeout(() => {this.fetchPhoto()}, this.config.updateInterval);
