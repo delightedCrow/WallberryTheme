@@ -17,7 +17,8 @@ Module.register("WallberryTheme", {
 		backgroundOpacity: 1, // between 0 (black background) and 1 (visible opaque background)
 		brightImageOpacity: 0.85, // between 0 (black background) and 1 (visible opaque background), only used when autoDimOn is true
 		autoDimOn: true, // automatically darken bright images
-		addBackgroundFade: ["top", "bottom"] // adds fades for the top and bottom bar regions (leave an empty list to remove fades)
+		addBackgroundFade: ["top", "bottom"], // adds fades for the top and bottom bar regions (leave an empty list to remove fades)
+		clearCacheOnStart: true // clear Electron's cache on MM start
 	},
 
 	photoData: null,
@@ -38,7 +39,11 @@ Module.register("WallberryTheme", {
 
 	start: function() {
 		Log.info("Starting module: " + this.name);
-		this.fetchPhoto();
+		if (this.config.clearCacheOnStart) {
+			this.sendSocketNotification("CLEAR_CACHE");
+		} else {
+			this.fetchPhoto();
+		}
 	},
 
 	getTemplate: function() {
@@ -56,19 +61,13 @@ Module.register("WallberryTheme", {
 		};
 	},
 
-	getFadeHeight: function(regionClassName) {
-		// we auto-adjust the height of the background fades to be at least the height of the top bar region and bottom bar regions, in case they're bigger than the 250px min height we set in the css
-		let region = document.getElementsByClassName(regionClassName)[0];
-		return region.clientHeight + 70; // +70 for margin+padding
-	},
+	socketNotificationReceived: function(notification, payload) {
+		switch(notification) {
+			case "ELECTRON_CACHE_CLEARED":
+				this.fetchPhoto();
+			break;
+		}
 
-	setBackgroundTint: function(tint) {
-		// setting the html/body background colors to the dark shade gives a much richer color to the image when it becomes transparent. We set the image to be transparent when we want to dim it (because the black background then comes through), but having a pure black background can cause the image to look greyish and washed out.
-		let darkBackground = `rgb(${tint.r}, ${tint.g}, ${tint.b})`;
-		let html = document.getElementsByTagName('html')[0];
-		let body = document.getElementsByTagName('body')[0];
-		body.style.backgroundColor = darkBackground;
-		html.style.backgroundColor = darkBackground;
 	},
 
 	fetchPhoto: function() {
@@ -147,5 +146,24 @@ Module.register("WallberryTheme", {
 		img.crossOrigin = "Anonymous"; // otherwise we'll get a security error if we attempt to draw this image on the canvas later (when we check if it's dark or light)
 		img.src = this.photoData.url;
 		this.photoElement = img;
-	}
+	},
+
+	/*
+			NUNJUCKS TEMPLATE HELPERS
+			The following functions are passed to and used by the nunjucks template
+	*/
+	getFadeHeight: function(regionClassName) {
+		// we auto-adjust the height of the background fades to be at least the height of the top bar region and bottom bar regions, in case they're bigger than the 250px min height we set in the css
+		let region = document.getElementsByClassName(regionClassName)[0];
+		return region.clientHeight + 70; // +70 for margin+padding
+	},
+
+	setBackgroundTint: function(tint) {
+		// setting the html/body background colors to the dark shade gives a much richer color to the image when it becomes transparent. We set the image to be transparent when we want to dim it (because the black background then comes through), but having a pure black background can cause the image to look greyish and washed out.
+		let darkBackground = `rgb(${tint.r}, ${tint.g}, ${tint.b})`;
+		let html = document.getElementsByTagName('html')[0];
+		let body = document.getElementsByTagName('body')[0];
+		body.style.backgroundColor = darkBackground;
+		html.style.backgroundColor = darkBackground;
+	},
 });

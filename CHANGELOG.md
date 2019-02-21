@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 ### Fixed
 - Fixed [Issue 10](https://github.com/delightedCrow/WallberryTheme/issues/10): Background fades not reaching to bottom of screen for other 3rd party MM2 modules.
+- Provided a more permanent fix for [Issue 8](https://github.com/delightedCrow/WallberryTheme/issues/8) by adding an option to clear Electron's cache on start up.
 
 ## 2.0.0 - 2019-2-10
 ### Added
