@@ -148,6 +148,17 @@ Module.register("WallberryTheme", {
 		this.photoElement = img;
 	},
 
+	suspend: function() {
+		Log.info("Suspending WallberryTheme...");
+		this.setBackgroundTint({r:0, g:0, b:0}); // set background back to black
+		clearTimeout(this.fetchTimer);
+	},
+
+	resume: function() {
+		Log.info("Waking WallberryTheme...");
+		this.fetchPhoto();
+	},
+
 	/*
 			NUNJUCKS TEMPLATE HELPERS
 			The following functions are passed to and used by the nunjucks template

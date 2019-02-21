@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 - Fixed [Issue 10](https://github.com/delightedCrow/WallberryTheme/issues/10): Background fades not reaching to bottom of screen for other 3rd party MM2 modules.
 - Provided a more permanent fix for [Issue 8](https://github.com/delightedCrow/WallberryTheme/issues/8) by adding an option to clear Electron's cache on start up.
+- WallberryTheme, WB-clock, and WB-weather all properly suspend their activity when hidden now, and resume properly when woken back up again.
 
 ## 2.0.0 - 2019-2-10
 ### Added

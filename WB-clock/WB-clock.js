@@ -13,6 +13,8 @@ Module.register("WB-clock",{
 		localCityName: null,
 		otherCities: []
 	},
+
+	updateTimer: null,
 	// Define required scripts.
 	getScripts: function() {
 		return ["moment.js", "moment-timezone.js"];
@@ -55,7 +57,7 @@ Module.register("WB-clock",{
 		Log.info("Starting module: " + this.name);
 
 		// Update clock every second
-		setInterval(() => {
+		this.updateTimer = setInterval(() => {
 			this.updateDom();
 		}, 1000);
 
@@ -72,5 +74,14 @@ Module.register("WB-clock",{
 				this.config.hourMinuteFormat = "HH:mm";
 			}
 		}
-	}
+	},
+
+	suspend: function() {
+		Log.info("Suspending WB-clock...");
+		clearInterval(this.updateTimer);
+	},
+
+	resume: function() {
+		this.start();
+	},
 	});

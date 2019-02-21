@@ -21,6 +21,8 @@ Module.register("WB-weather", {
     retryDelay: 2500
 	},
 
+	fetchTimer: null,
+
 	wdata: {
 		maxForecastPossible: 8, // DarkSky only allows for up to 8 days
 		fetchError: null,
@@ -75,12 +77,21 @@ Module.register("WB-weather", {
 		}
 	},
 
+	suspend: function() {
+		Log.info("Suspending WB-weather...");
+		clearTimeout(this.fetchTimer);
+	},
+
+	resume: function() {
+		this.start();
+	},
+
 	scheduleUpdate: function(delay=null) {
 		var nextFetch = this.config.updateInterval;
 		if (delay !== null && delay >= 0) {
 			nextFetch = delay;
 		}
-		setTimeout(() => {this.sendSocketNotification("FETCH_DATA")}, nextFetch);
+		this.fetchTimer = setTimeout(() => {this.sendSocketNotification("FETCH_DATA")}, nextFetch);
 	},
 
 	socketNotificationReceived: function(notification, payload) {
