@@ -2,9 +2,7 @@
   {{ setBackgroundTint(photoData.dark) }}
 
   <div class="wb-unsplash-bg-attribution">Photo by {{ photoData.authorName }} on Unsplash</div>
-  <div>
   <img src="{{ photoElement.src }}" style="opacity: {{ config.brightImageOpacity if photoData.isLight else config.backgroundOpacity }};">
-  <div>top height: {{topFadeHeight}}, bottom height {{bottomFadeHeight}}</div>
 
   {% if "top" in config.addBackgroundFade %}
     <div class="topfade wbfade" style="background-image: linear-gradient(rgba({{photoData.dark.r}}, {{photoData.dark.g}}, {{photoData.dark.b}}, 0.7), rgba({{photoData.light.r}}, {{photoData.light.g}}, {{photoData.light.b}}, 0)); height: {{ getHeight("region top bar") }}px;"></div>
