@@ -9,7 +9,8 @@ Module.register("WallberryTheme", {
 	defaults: {
 		unsplashAccessKey: "", // REQUIRED
 
-		collections: "", //comma-separated list of Unsplash collection ids
+		collections: "", // comma-separated list of Unsplash collection ids
+		queries: [], // list of search queries to search for
 
 		updateInterval: 300 * 1000, // 5 min
 		orientation: "portrait", // desired photo orientation - can be portrait, landscape, or squarish
@@ -63,8 +64,8 @@ Module.register("WallberryTheme", {
 
 	socketNotificationReceived: function(notification, payload) {
 		switch(notification) {
-			case "ELECTRON_CACHE_CLEARED":
-				this.fetchPhoto();
+		case "ELECTRON_CACHE_CLEARED":
+			this.fetchPhoto();
 			break;
 		}
 
@@ -82,13 +83,20 @@ Module.register("WallberryTheme", {
 				"&h=" + window.innerHeight;
 		}
 
+		if (this.config.queries.length > 0) {
+			let query = this.config.queries[Math.floor(Math.random() * this.config.queries.length)];
+
+			url = url +
+				"&query=" + encodeURIComponent(query);
+		}
+
 		this.photoError = null;
 		var req = new XMLHttpRequest();
 		var mod = this;
 
 		req.addEventListener("load", function() {
 			const unsplashData = JSON.parse(this.responseText);
-			if (this.status == 200) {
+			if (this.status === 200) {
 				mod.processPhoto(unsplashData);
 			} else if ("errors" in unsplashData) {
 				mod.processError(`The Unsplash API returned the error "${unsplashData["errors"].join(", ")}"`);
@@ -104,7 +112,7 @@ Module.register("WallberryTheme", {
 		});
 
 		req.open("GET", url);
-		req.setRequestHeader('Accept-Version', 'v1');
+		req.setRequestHeader("Accept-Version", "v1");
 		req.send();
 	},
 
@@ -133,7 +141,7 @@ Module.register("WallberryTheme", {
 		p.authorName = photoData.user.name;
 		this.photoData = p;
 
-		let img = document.createElement('img');
+		let img = document.createElement("img");
 		img.style.opacity = this.config.backgroundOpacity;
 		img.onload = () => {
 			if (this.config.autoDimOn) {
@@ -170,10 +178,11 @@ Module.register("WallberryTheme", {
 	},
 
 	setBackgroundTint: function(tint) {
-		// setting the html/body background colors to the dark shade gives a much richer color to the image when it becomes transparent. We set the image to be transparent when we want to dim it (because the black background then comes through), but having a pure black background can cause the image to look greyish and washed out.
+		// setting the html/body background colors to the dark shade gives a much richer color to the image when it becomes transparent.
+		// We set the image to be transparent when we want to dim it (because the black background then comes through), but having a pure black background can cause the image to look greyish and washed out.
 		let darkBackground = `rgb(${tint.r}, ${tint.g}, ${tint.b})`;
-		let html = document.getElementsByTagName('html')[0];
-		let body = document.getElementsByTagName('body')[0];
+		let html = document.getElementsByTagName("html")[0];
+		let body = document.getElementsByTagName("body")[0];
 		body.style.backgroundColor = darkBackground;
 		html.style.backgroundColor = darkBackground;
 	},
