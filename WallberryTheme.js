@@ -30,7 +30,7 @@ Module.register("WallberryTheme", {
 	getStyles: function() {
 		return [
 			this.file("css/WallberryTheme.css"),
-			"font-awesome5.css"
+			'font-awesome.css'
 		];
 	},
 

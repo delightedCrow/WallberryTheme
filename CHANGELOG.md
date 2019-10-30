@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 - Nothing yet :)
 
+## 2.2.1 - 2019-10-30
+### Fixed
+- Requesting the proper font awesome stylesheet now - no more 404s on FA now :)
+
 ## 2.2.0 - 2019-3-08
 ### Added
 - Contributing section to the README.md
