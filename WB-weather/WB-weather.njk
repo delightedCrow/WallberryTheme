@@ -5,15 +5,15 @@
 		</div>
 		<div class="weather__description">{{ weather.currentDescription }}</div>
 	</div>
-  <div class="weather__weeklyforecast">
-  {% for day in weather.forecast %}
-    <div class="forecast">
+	<div class="weather__weeklyforecast">
+	{% for day in weather.forecast %}
+		<div class="forecast">
 			<div class="forecast__day">{{ day.dayLabel }}</div>
 			<div class="forecast__icon"><i class="wi wi-forecast-io-{{ day.icon }}"></i></div>
 			<div class="forecast__rainchance"><i class="wi {{ day.precipType }}"></i>{{day.precipProbability}}%</div>
 			<div class="forecast__highlow">{{ day.lowTemp }}<i class="wi wi-degrees"></i> &middot; {{ day.highTemp }}<i class="wi wi-degrees"></i></div>
 		</div>
-    {% endfor %}
+		{% endfor %}
 	</div>
 	{% elif status.error %}
 	<div class="wb-errors">{{ status.error | safe }}</div>

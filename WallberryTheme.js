@@ -30,12 +30,12 @@ Module.register("WallberryTheme", {
 	getStyles: function() {
 		return [
 			this.file("css/WallberryTheme.css"),
-			'font-awesome.css'
+			"font-awesome.css"
 		];
 	},
 
 	getScripts: function() {
-		return ["colorHelpers.js"]
+		return ["colorHelpers.js"];
 	},
 
 	start: function() {
@@ -48,7 +48,7 @@ Module.register("WallberryTheme", {
 	},
 
 	getTemplate: function() {
-		return "WallberryTheme.njk"
+		return "WallberryTheme.njk";
 	},
 
 	getTemplateData: function() {
@@ -120,7 +120,9 @@ Module.register("WallberryTheme", {
 		// TODO: might want to add support for translating error messages
 		this.photoError = errorText;
 		this.updateDom();
-		this.fetchTimer = setTimeout(() => {this.fetchPhoto()}, this.config.updateInterval);
+		this.fetchTimer = setTimeout(() => {
+			this.fetchPhoto();
+		}, this.config.updateInterval);
 	},
 
 	processPhoto: function(photoData) {
@@ -148,7 +150,9 @@ Module.register("WallberryTheme", {
 				this.photoData.isLight = WBColor.isImageLight(img);
 			}
 			this.updateDom(2000);
-			this.fetchTimer = setTimeout(() => {this.fetchPhoto()}, this.config.updateInterval);
+			this.fetchTimer = setTimeout(() => {
+				this.fetchPhoto();
+			}, this.config.updateInterval);
 		};
 
 		img.crossOrigin = "Anonymous"; // otherwise we'll get a security error if we attempt to draw this image on the canvas later (when we check if it's dark or light)

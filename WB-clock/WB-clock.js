@@ -84,4 +84,4 @@ Module.register("WB-clock",{
 	resume: function() {
 		this.start();
 	},
-	});
+});

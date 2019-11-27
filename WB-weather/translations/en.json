@@ -1,8 +1,8 @@
 {
-  "WLOADING": "Loading Weather Data&hellip;",
+	"WLOADING": "Loading Weather Data&hellip;",
 
-  "TODAY": "Today",
-  "ERROR": "DarkSky Error: ",
-  "CONNECTION_ERROR": "Error reaching DarkSky servers. <br> Check your internet connection or try again later.",
-  "API_KEY_MISSING": "ERROR: Incorrect or missing DarkSky API key. <br> Make sure your DarkSky API key was added correctly in config.js."
+	"TODAY": "Today",
+	"ERROR": "DarkSky Error: ",
+	"CONNECTION_ERROR": "Error reaching DarkSky servers. <br> Check your internet connection or try again later.",
+	"API_KEY_MISSING": "ERROR: Incorrect or missing DarkSky API key. <br> Make sure your DarkSky API key was added correctly in config.js."
 }
