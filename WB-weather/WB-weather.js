@@ -117,6 +117,10 @@ Module.register("WB-weather", {
 			}
 			this.wdata.fetchResponse = payload;
 			break;
+
+			// don't update on any other message
+			default:
+			  return;
 		}
 
 		this.updateDom();
