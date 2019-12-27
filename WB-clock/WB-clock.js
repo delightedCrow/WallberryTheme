@@ -53,13 +53,16 @@ Module.register("WB-clock",{
 		};
 	},
 
+	getDom: function() {
+		var now = moment();
+		var nextTick = (60 - now.seconds()) * 1000 + (1000 - now.milliseconds());
+		if (nextTick <= 0) nextTick = 59.5 * 1000;  // ensure it updates to the millisecond
+		setTimeout(() => this.updateDom(), nextTick);
+		return this._super();
+  },
+
 	start: function() {
 		Log.info("Starting module: " + this.name);
-
-		// Update clock every second
-		this.updateTimer = setInterval(() => {
-			this.updateDom();
-		}, 1000);
 
 		// Set locale.
 		moment.locale(config.language);

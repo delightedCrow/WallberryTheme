@@ -6,7 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 ### Fixed
-WB-Weather exceeds 1000 calls on DarkSky API #15
+- WB-Weather exceeds 1000 calls on DarkSky API #15
+
+### Enhanced
+- WB-Clock updates on the minute 
 
 ## 2.2.1 - 2019-10-30
 ### Fixed
