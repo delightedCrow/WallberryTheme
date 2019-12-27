@@ -55,8 +55,8 @@ Module.register("WB-clock",{
 
 	getDom: function() {
 		var now = moment();
-		var nextTick = (60 - now.seconds()) * 1000 + (1000 - now.milliseconds());
-		if (nextTick <= 0) nextTick = 59.5 * 1000;  // ensure it updates to the millisecond
+		var nextTick = (59 - now.seconds()) * 1000 + (1000 - now.milliseconds());
+		if (nextTick <= 0) nextTick = 60 * 1000;
 		setTimeout(() => this.updateDom(), nextTick);
 		return this._super();
   },
