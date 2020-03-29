@@ -13,8 +13,9 @@ Module.register("WallberryTheme", {
 		queries: [], // list of search queries to search for
 
 		updateInterval: 300 * 1000, // 5 min
-		orientation: "portrait", // desired photo orientation - can be portrait, landscape, or squarish
+		orientation: "portrait", // desired photo orientation - can be portrait, landscape, or squarish or empty
 		resizeForScreen: true, // resize image for screen - otherwise image is displayed at full height/width
+		resizePriorities: "faces,entropy", //option with descending priorities (center = fallback) - top, bottom, left, right, faces, focalpoint, edges, and entropy
 		backgroundOpacity: 1, // between 0 (black background) and 1 (visible opaque background)
 		brightImageOpacity: 0.85, // between 0 (black background) and 1 (visible opaque background), only used when autoDimOn is true
 		autoDimOn: true, // automatically darken bright images
@@ -74,13 +75,18 @@ Module.register("WallberryTheme", {
 	fetchPhoto: function() {
 		var url = "https://api.unsplash.com/photos/random?" +
 			"client_id=" + this.config.unsplashAccessKey +
-			"&collections=" + this.config.collections +
-			"&orientation=" + this.config.orientation;
-
+			"&collections=" + this.config.collections;
+		
+		if (this.config.orientation != "") {
+ 			url = url +
+ 				"&orientation=" + this.config.orientation;
+ 		}
+		
 		if (this.config.resizeForScreen) {
 			url = url +
 				"&w=" + window.innerWidth +
-				"&h=" + window.innerHeight;
+				"&h=" + window.innerHeight +
+ 				"&fit=crop"; //default = from center
 		}
 
 		if (this.config.queries.length > 0) {
@@ -89,6 +95,11 @@ Module.register("WallberryTheme", {
 			url = url +
 				"&query=" + encodeURIComponent(query);
 		}
+		
+		if (this.config.resizePriorities) {
+ 			url = url +
+ 				"&crop=" + this.config.resizePriorities;
+ 		}
 
 		this.photoError = null;
 		var req = new XMLHttpRequest();
