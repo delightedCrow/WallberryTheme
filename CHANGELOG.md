@@ -5,7 +5,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
-- Nothing yet :)
+### Changed
+- Changed WalberryTheme, WB-weather, and WB-clock to all use cached web templates in their nunjucks environments instead of requesting a new version from the server every time.
+
+### Fixed
+- General linting and code clean up.
 
 ## 2.2.1 - 2019-10-30
 ### Fixed

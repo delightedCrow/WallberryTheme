@@ -168,12 +168,32 @@ Module.register("WallberryTheme", {
 
 	resume: function() {
 		Log.info("Waking WallberryTheme...");
+		clearTimeout(this.fetchTimer);
 		this.fetchPhoto();
+	},
+
+	nunjucksEnvironment: function() {
+		if (this._nunjucksEnvironment !== null) {
+			return this._nunjucksEnvironment;
+		}
+
+		var self = this;
+
+		this._nunjucksEnvironment = new nunjucks.Environment(new nunjucks.WebLoader(this.file(""), {async: true, useCache: true}), {
+			trimBlocks: true,
+			lstripBlocks: true
+		});
+		this._nunjucksEnvironment.addFilter("translate", function(str) {
+			return self.translate(str);
+		});
+
+		return this._nunjucksEnvironment;
 	},
 
 	/*
 			NUNJUCKS TEMPLATE HELPERS
 			The following functions are passed to and used by the nunjucks template
+			TODO: These should probably be added as nunjucks filters to our nunjucks environment above
 	*/
 	getFadeHeight: function(regionClassName) {
 		// we auto-adjust the height of the background fades to be at least the height of the top bar region and bottom bar regions, in case they're bigger than the 250px min height we set in the css

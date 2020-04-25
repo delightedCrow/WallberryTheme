@@ -82,6 +82,22 @@ Module.register("WB-clock",{
 	},
 
 	resume: function() {
+		clearInterval(this.updateTimer);
 		this.start();
 	},
+
+	nunjucksEnvironment: function() {
+		if (this._nunjucksEnvironment !== null) {
+			return this._nunjucksEnvironment;
+		}
+
+		var self = this;
+
+		this._nunjucksEnvironment = new nunjucks.Environment(new nunjucks.WebLoader(this.file(""), {async: true, useCache: true}), {
+			trimBlocks: true,
+			lstripBlocks: true
+		});
+
+		return this._nunjucksEnvironment;
+	}
 });

@@ -83,6 +83,7 @@ Module.register("WB-weather", {
 	},
 
 	resume: function() {
+		clearTimeout(this.fetchTimer);
 		this.start();
 	},
 
@@ -191,5 +192,23 @@ Module.register("WB-weather", {
 		}
 
 		return weather;
+	},
+
+	nunjucksEnvironment: function() {
+		if (this._nunjucksEnvironment !== null) {
+			return this._nunjucksEnvironment;
+		}
+
+		var self = this;
+
+		this._nunjucksEnvironment = new nunjucks.Environment(new nunjucks.WebLoader(this.file(""), {async: true, useCache: true}), {
+			trimBlocks: true,
+			lstripBlocks: true
+		});
+		this._nunjucksEnvironment.addFilter("translate", function(str) {
+			return self.translate(str);
+		});
+
+		return this._nunjucksEnvironment;
 	}
 });
