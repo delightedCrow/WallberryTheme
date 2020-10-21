@@ -26,6 +26,7 @@ Module.register("WallberryTheme", {
 	photoElement: null,
 	photoError: null,
 	fetchTimer: null,
+	img: null,
 
 	getStyles: function() {
 		return [
@@ -141,9 +142,11 @@ Module.register("WallberryTheme", {
 		p.authorName = photoData.user.name;
 		this.photoData = p;
 
-		let img = document.createElement("img");
-		img.style.opacity = this.config.backgroundOpacity;
-		img.onload = () => {
+		if (this.img === null)
+			this.img = document.createElement("img");
+
+		this.img.style.opacity = this.config.backgroundOpacity;
+		this.img.onload = () => {
 			if (this.config.autoDimOn) {
 				this.photoData.isLight = WBColor.isImageLight(img);
 			}
@@ -151,8 +154,8 @@ Module.register("WallberryTheme", {
 			this.fetchTimer = setTimeout(() => {this.fetchPhoto()}, this.config.updateInterval);
 		};
 
-		img.crossOrigin = "Anonymous"; // otherwise we'll get a security error if we attempt to draw this image on the canvas later (when we check if it's dark or light)
-		img.src = this.photoData.url;
+		this.img.crossOrigin = "Anonymous"; // otherwise we'll get a security error if we attempt to draw this image on the canvas later (when we check if it's dark or light)
+		this.img.src = this.photoData.url;
 		this.photoElement = img;
 	},
 
