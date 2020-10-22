@@ -148,7 +148,7 @@ Module.register("WallberryTheme", {
 		this.img.style.opacity = this.config.backgroundOpacity;
 		this.img.onload = () => {
 			if (this.config.autoDimOn) {
-				this.photoData.isLight = WBColor.isImageLight(img);
+				this.photoData.isLight = WBColor.isImageLight(this.img);
 			}
 			this.updateDom(2000);
 			this.fetchTimer = setTimeout(() => {this.fetchPhoto()}, this.config.updateInterval);
@@ -156,7 +156,7 @@ Module.register("WallberryTheme", {
 
 		this.img.crossOrigin = "Anonymous"; // otherwise we'll get a security error if we attempt to draw this image on the canvas later (when we check if it's dark or light)
 		this.img.src = this.photoData.url;
-		this.photoElement = img;
+		this.photoElement = this.img;
 	},
 
 	suspend: function() {
