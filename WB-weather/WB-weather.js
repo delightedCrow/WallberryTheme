@@ -7,41 +7,23 @@
 Module.register("WB-weather", {
 	// Module config defaults.
 	defaults: {
-		darkSkyApiKey: null, // REQUIRED
+		providerName: "openweathermap",
+		template: "classic-wallberry",
+
+		apiKey: null, // REQUIRED
 		latitude: "", // REQUIRED
 		longitude: "", // REQUIRED
 
-		units: "auto", // what measurement units to use (SI, US, auto)
-		roundTemp: true, // round temperature to nearest integer
+		units: config.units, // "standard", "metric", "imperial"
 		language: config.language, // what language to localize for
-		daysToForecast: 4, // how many days to include in upcoming forecast
+		daysToForecast: 4, // how many days to include in upcoming forecast (including today)
 
-		updateInterval: 10 * 60 * 1000, // 10 minutes
-		initialLoadDelay: 1000,
-		retryDelay: 2500
+		updateInterval: null,
+		initialLoadDelay: 1000
 	},
 
 	fetchTimer: null,
-
-	wdata: {
-		maxForecastPossible: 8, // DarkSky only allows for up to 8 days
-		fetchError: null,
-		fetchResponse: null,
-	},
-
-	precipIcons: { // icons for displaying type of precipitation
-		"default": "wi-raindrop",
-		"rain": "wi-raindrop",
-		"snow": "wi-snowflake-cold"
-	},
-
-	translationKey: {
-		loading: "WLOADING",
-		invalidKey: "API_KEY_MISSING",
-		today: "TODAY",
-		connectionError: "CONNECTION_ERROR",
-		error: "ERROR"
-	},
+	provider: null,
 
 	getTranslations: function() {
 		return {
@@ -50,148 +32,74 @@ Module.register("WB-weather", {
 	},
 
 	getScripts: function() {
-		return ["moment.js"];
+		return [
+			"moment.js",
+			"WB-dataObjects.js",
+			"WB-provider.js",
+			this.file("providers/WB-" + this.config.providerName.toLowerCase() + ".js")
+		];
 	},
 
 	getStyles: function() {
-		return ["weather-icons.css", "WB-weather.css"];
+		return [
+			"weather-icons.css",
+			this.file("css/" + this.config.template.toLowerCase() + ".css")
+		];
 	},
 
 	getTemplate: function() {
-		return "WB-weather.njk";
+		return `templates/${this.config.template.toLowerCase()}.njk`;
 	},
 
 	getTemplateData: function() {
 		return {
-			config: this.config,
-			weather: this.getWeatherDataForTemplate(),
-			status: this.getStatusDataForTemplate()
+			weather: this.provider.weather,
+			error: this.provider.error
 		};
 	},
 
 	start: function() {
-		Log.info("Starting module: " + this.name);
-		if (this.config.darkSkyApiKey) {
-			this.sendSocketNotification("SET_CONFIG", this.config);
-			this.scheduleUpdate(this.config.initialLoadDelay);
-		}
+		Log.info(`Starting module: ${this.name}`);
+		this.addNunjuckFilters();
+		this.provider = WBProviderManager.initialize(this.config.providerName, this.config, this);
+		this.scheduleUpdate(this.config.initialLoadDelay);
 	},
 
 	suspend: function() {
-		Log.info("Suspending WB-weather...");
+		Log.info(`Suspending module: ${this.name}`);
 		clearTimeout(this.fetchTimer);
 	},
 
 	resume: function() {
+		Log.info(`Resuming module: ${this.name}`);
 		clearTimeout(this.fetchTimer);
-		this.start();
+		this.scheduleUpdate(this.config.initialLoadDelay);
 	},
 
-	scheduleUpdate: function(delay=null) {
-		var nextFetch = this.config.updateInterval;
-		if (delay !== null && delay >= 0) {
-			nextFetch = delay;
-		}
-		Log.info(`Scheduling weather update for ${nextFetch} milliseconds`);
-		this.fetchTimer = setTimeout(() => {
-			this.sendSocketNotification("FETCH_DATA");
-		}, nextFetch);
-	},
-
-	socketNotificationReceived: function(notification, payload) {
-		Log.info(`Socket notification: ${notification}, `, payload);
-		switch(notification) {
-		case "NETWORK_ERROR":
-			// this is likely due to connection issue - we should retry in a bit
-			Log.error("Error reaching DarkSky: ", payload);
-			this.wdata.fetchError = payload;
-			this.scheduleUpdate();
-			break;
-
-		case "DATA_AVAILABLE":
-			// code 200 means all went well - we have weather data
-			if (payload.statusCode == 200) {
-				this.scheduleUpdate();
-			} else {
-				// if we get anything other than a 200 from DarkSky it's probably a config error or something else the user will have to restart MagicMirror to address - we shouldn't schedule anymore updates
-				Log.error("DarkSky Error: ", payload);
-			}
-			this.wdata.fetchResponse = payload;
-			break;
+	// gets called by the weather provider when it has an update available
+	updateAvailable: function() {
+		// Only schedule another fetch if we succeeded in getting the weather or if the error we encountered is temporary
+		if (this.provider.error === null) {
+			// No errors, we successfully got the weather!
+			this.scheduleUpdate(this.provider.updateInterval);
+		} else if (this.provider.error.isTemporary) {
+			// We got an error, but we might recover from it if we retry the request again later
+			this.scheduleUpdate(this.provider.error.retryDelay);
 		}
 
+		// we should update the dom with the new update
 		this.updateDom();
 	},
 
-	// this handles getting the translated error/loading messages for the template
-	getStatusDataForTemplate: function() {
-		var status = {};
-		// if fetchResponse is null then we haven't gotten data yet - we're still loading (unless we have an empty API key - then we'll never load anything!)
-		if (this.config.darkSkyApiKey && !this.wdata.fetchResponse) {
-			status.loadingMessage = this.translate(this.translationKey.loading);
-			return status;
+	scheduleUpdate: function(delay=null) {
+		var nextFetch = this.provider.updateInterval;
+		if (delay !== null && delay >= 0) {
+			nextFetch = delay;
 		}
 
-		// DarkSky status code of 403 or a missing API key results in INVALID KEY error
-		if (this.config.darkSkyApiKey == null || this.wdata.fetchResponse.statusCode == 403) {
-			status.error = this.translate(this.translationKey.invalidKey);
-			return status;
-		}
-
-		// DarkSky sent us an error of some kind, probably user supplied an incorrect config parameter
-		if (this.wdata.fetchResponse.statusCode != 200) {
-			let errorObj = JSON.parse(this.wdata.fetchResponse.body);
-			status.error = this.translate(this.translationKey.error) + errorObj.error;
-			return status;
-		}
-
-		// Looks like we got a network error
-		if (this.wdata.fetchError != null) {
-			status.error = this.translate(this.translationKey.connectionError);
-			return status;
-		}
-	},
-
-	// handles processing all the weather data for the template
-	getWeatherDataForTemplate: function() {
-		// if we don't have weather data we can just return now
-		if (this.wdata.fetchResponse == null || this.wdata.fetchResponse.statusCode != 200) {
-			return null;
-		}
-
-		let darksky = JSON.parse(this.wdata.fetchResponse.body);
-		var weather = {};
-		weather.forecast = [];
-
-		weather.currentTemp = Math.round(darksky.currently.temperature);
-		if (darksky.minutely != null) {
-			weather.currentDescription = darksky.minutely.summary;
-		} else {
-			weather.currentDescription = darksky.hourly.summary;
-		}
-
-		weather.currentIcon = darksky.currently.icon;
-
-		for (var i=0; i<this.config.daysToForecast; i++) {
-			var day = {};
-			let forecast = darksky.daily.data[i];
-			day.highTemp = Math.round(forecast.temperatureHigh);
-			day.lowTemp = Math.round(forecast.temperatureLow);
-			day.precipProbability = Math.round(forecast.precipProbability * 100); // x100 to convert from decimal to percentage
-			day.precipType = forecast.hasOwnProperty("precipType") ? this.precipIcons[forecast.precipType] : this.precipIcons["default"];
-			day.icon = forecast.icon;
-
-			var date = new Date(forecast.time*1000); // not sure about the x1000 here
-			day.dayLabel = moment.weekdaysShort(date.getDay());
-
-			// changing the day label to "today" instead of day of the week
-			if (i === 0) {
-				day.dayLabel = this.translate(this.translationKey.today);
-			}
-			weather.forecast.push(day);
-		}
-
-		return weather;
+		this.fetchTimer = setTimeout(() => {
+			this.provider.fetchWeather();
+		}, nextFetch);
 	},
 
 	nunjucksEnvironment: function() {
@@ -199,16 +107,31 @@ Module.register("WB-weather", {
 			return this._nunjucksEnvironment;
 		}
 
-		var self = this;
-
 		this._nunjucksEnvironment = new nunjucks.Environment(new nunjucks.WebLoader(this.file(""), {async: true, useCache: true}), {
 			trimBlocks: true,
 			lstripBlocks: true
 		});
-		this._nunjucksEnvironment.addFilter("translate", function(str) {
-			return self.translate(str);
-		});
 
 		return this._nunjucksEnvironment;
-	}
+	},
+
+	addNunjuckFilters: function() {
+		this.nunjucksEnvironment().addFilter("dayLabel", function(timestamp) {
+			var date = new Date(timestamp * 1000);
+			return moment.weekdaysShort(date.getDay());
+		});
+
+		this.nunjucksEnvironment().addFilter("precipIcons", function(precipType) {
+			return this.precipitationTypes[precipType];
+		}.bind(this));
+
+		this.nunjucksEnvironment().addFilter("translate", function(str, variables) {
+			return this.translate(str, variables);
+		}.bind(this));
+	},
+
+	precipitationTypes: {
+		"snow": "wi-snowflake-cold",
+		"rain": "wi-raindrop"
+	},
 });

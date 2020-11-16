@@ -6,10 +6,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 ### Changed
+- WB-weather now uses openweathermap as its default weather provider (as DarkSky has been acquired by Apple and no longer available).
 - Changed WalberryTheme, WB-weather, and WB-clock to all use cached web templates in their nunjucks environments instead of requesting a new version from the server every time.
 
 ### Fixed
+- Memory leak described in [Issue 25](https://github.com/delightedCrow/WallberryTheme/issues/25) (authored by [@samusaran](https://github.com/samusaran)).
 - General linting and code clean up.
+
+### Added
+- Wb-weather has been completely refactored and can now switch between multiple weather providers and display templates.
 
 ## 2.2.1 - 2019-10-30
 ### Fixed

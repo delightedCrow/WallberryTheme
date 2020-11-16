@@ -7,7 +7,18 @@ The WallberryTheme also comes packaged with two companion modules for displaying
  **REQUIRED API KEYS:**
 
 - A (free) Unsplash API key is required and can be obtained from [Unsplash.com](https://unsplash.com/developers).
-- For the weather module, a (free) DarkSky API key is required and can be obtained at [DarkSky.net](https://darksky.net/dev).
+- For the weather module, a (free) OpenWeatherMap API key is required and can be obtained at [OpenWeatherMap.org/api](https://openweathermap.org/api).
+
+## New and Shiny in 3.0.0
+
+The [WB-weather](WB-weather/README.md) companion module has now been completely refactored with some great new features:
+
+- OpenWeatherMap is now the default weather provider (RIP DarkSky, you were taken too soon).
+- New weather providers can be easily integrated by subclassing WB-weather's new `WBProvider` class.
+- New config option for choosing which display template to use, so you can easily change how the weather is displayed by adding new templates.
+
+
+ Go check out the details in [WB-weather's README](WB-weather/README.md).
 
 ## Screenshots
 <p align="center">
@@ -58,13 +69,13 @@ modules: [
       ]
     }
   },
-  // WB-weather adds weather via DarkSky API (Optional Module)
+  // WB-weather adds weather (Optional Module)
   {
     module: "WallberryTheme/WB-weather",
     position: "bottom_bar",  // Highly suggested location
     config: {
       // See "Configuration options" for more information.
-      darkSkyApiKey: "Your DarkSky API key", // REQUIRED
+      darkSkyApiKey: "Your openweathermap API key", // REQUIRED
       latitude:   47.603230, // REQUIRED
       longitude: -122.330276 // REQUIRED
     }

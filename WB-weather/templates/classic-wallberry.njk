@@ -1,0 +1,30 @@
+<div class="weather">
+	{% if weather %}
+	<div class="weather__current">
+		<div class="current__temperature light">{{ weather.temp | round }}<i class="wi wi-degrees"></i><i class="wi {{ weather.wicon }} wi-current"></i>
+		</div>
+		<div class="weather__description">{{ weather.longDescription }}</div>
+	</div>
+	<div class="weather__weeklyforecast">
+	{% for day in weather.forecast %}
+		<div class="forecast">
+			{% if loop.first %}
+				<div class="forecast__day">{{ "TODAY" | translate }}</div>
+			{% else %}
+				<div class="forecast__day">{{ day.date | dayLabel }}</div>
+			{% endif %}
+			<div class="forecast__icon"><i class="wi {{ day.wicon }}"></i></div>
+			<div class="forecast__rainchance"><i class="wi {{ day.precipType | precipIcons }}"></i>{{day.precipChance }}%</div>
+			<div class="forecast__highlow">{{ day.minTemp | round }}<i class="wi wi-degrees"></i> &middot; {{ day.maxTemp | round }}<i class="wi wi-degrees"></i></div>
+		</div>
+		{% endfor %}
+	</div>
+	{% elif error %}
+	<div class="wb-errors">{{ "ERROR" | translate | safe }} {{ error.description | safe }}</div>
+		{% if error.isTemporary %}
+			<div>{{ "RETRYING" | translate({"delay":error.retryDelay/1000}) }}</div>
+		{% endif %}
+	{% else %}
+	<div class="wb-loading">{{ "WLOADING" | translate | safe }}</div>
+	{% endif %}
+</div>

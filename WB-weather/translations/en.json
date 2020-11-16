@@ -2,7 +2,6 @@
 	"WLOADING": "Loading Weather Data&hellip;",
 
 	"TODAY": "Today",
-	"ERROR": "DarkSky Error: ",
-	"CONNECTION_ERROR": "Error reaching DarkSky servers. <br> Check your internet connection or try again later.",
-	"API_KEY_MISSING": "ERROR: Incorrect or missing DarkSky API key. <br> Make sure your DarkSky API key was added correctly in config.js."
+	"ERROR": "Error fetching weather:",
+	"RETRYING": "This is probably due to a network issue; Retrying in {delay} seconds."
 }
