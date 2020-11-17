@@ -51,7 +51,9 @@ The current default template for WB-weather. Displays the current weather and up
 
 * **Template Name:** `"classic-wallberry"`
 
-Sample Screenshot: <img src="screenshots/wb-weather-wallberry-classic.jpg">
+Sample Screenshot:
+
+<img src="screenshots/wb-weather-wallberry-classic.jpg">
 
 # WB-weather Development
 
@@ -69,7 +71,7 @@ All weather providers should subclass the [`WBProvider` class](WB-provider.js) a
 
 #### Examples
 
-See [WB-newProviderTemplate.js](WB-newProviderTemplate.js) as an example.
+See [WB-newProviderTemplate.js](providers/WB-newProviderTemplate.js) as an example.
 
 #### Naming Conventions
 

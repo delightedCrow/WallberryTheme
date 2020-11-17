@@ -10,22 +10,26 @@ var WBProviderManager = {
 		this.providers[providerName] = providerClass;
 	},
 
-	initialize: function(providerName, config, delegate) {
-		return new this.providers[providerName](providerName, config, delegate);
+	initialize: function(config, delegate) {
+		// TODO make this less brittle
+		return new this.providers[config.providerName](config, delegate);
+	},
+
+	usesNodeHelper: function(providerName) {
+		return this.providers[providerName].usesNodeHelper;
 	}
 };
 
 // TODO: SO MUCH DOCUMENTATION
 class WBProvider {
-	constructor(name, config, delegate) {
+	constructor(config, delegate) {
 		this.config = config;
-		this.name = name;
+		this.name = config.providerName;
 		this.delegate = delegate;
 		this.daysToForecast = this.checkForecastLimit(config.daysToForecast, this.daysToForecastLimit);
 		this.updateInterval = this.checkUpdateLimit(config.updateInterval, this.updateIntervalLimit);
 
 		this.weatherObject = null;
-		this.forecastObjectArray = null;
 		this.error = null;
 	}
 
@@ -46,8 +50,12 @@ class WBProvider {
 		throw new Error(`Weather Provider ${this.name} does not subclass the daysToForecastLimit() getter method.`);
 	}
 
-	fetchWeather(callback) {
+	fetchWeather() {
 		throw new Error(`Weather Provider ${this.name} does not subclass the fetchWeather() method.`);
+	}
+
+	get usesNodeHelper() {
+		return false;
 	}
 
 	get errorRetryDelay() {

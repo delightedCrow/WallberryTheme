@@ -5,8 +5,8 @@
  * MIT Licensed.
  */
 class WBOpenWeatherMap extends WBProvider {
-	constructor(name, config, delegate) {
-		super(name, config, delegate);
+	constructor(config, delegate) {
+		super(config, delegate);
 		this.baseURL = "https://api.openweathermap.org/data/2.5/onecall";
 		this.url = this.getQueryStringURL(this.baseURL, {
 			"lat": config.latitude,
@@ -45,7 +45,7 @@ class WBOpenWeatherMap extends WBProvider {
 	}
 
 	process(data) {
-		// process our data into a WBWeather object 
+		// process our data into a WBWeather object
 		var w = new WBWeather();
 		w.temp = data.current.temp;
 		w.wicon = `wi-owm-${data.current.weather[0].id}`;
@@ -55,7 +55,7 @@ class WBOpenWeatherMap extends WBProvider {
 		w.forecast = data.daily.slice(0,this.daysToForecast).map((daily) => {
 			var f = new WBForecast();
 			f.date = daily.dt;
-			f.precipChance = daily.pop;
+			f.precipChance = daily.pop * 100;
 			f.precipType = ("snow" in daily) ? "snow" : "rain";
 			f.minTemp = daily.temp.min;
 			f.maxTemp = daily.temp.max;

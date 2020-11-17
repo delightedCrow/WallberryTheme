@@ -32,11 +32,12 @@ Module.register("WB-weather", {
 	},
 
 	getScripts: function() {
+		let provider = this.hasPre3Config() ? "darksky" : this.config.providerName;
 		return [
 			"moment.js",
 			"WB-dataObjects.js",
 			"WB-provider.js",
-			this.file("providers/WB-" + this.config.providerName.toLowerCase() + ".js")
+			this.file("providers/WB-" + provider.toLowerCase() + ".js")
 		];
 	},
 
@@ -61,7 +62,14 @@ Module.register("WB-weather", {
 	start: function() {
 		Log.info(`Starting module: ${this.name}`);
 		this.addNunjuckFilters();
-		this.provider = WBProviderManager.initialize(this.config.providerName, this.config, this);
+
+		if (this.hasPre3Config()) {
+			// make the update a little smoother for the people who updated from a pre-3.0 version of WB-weather and are still using darksky
+			this.config.providerName = "darksky";
+			this.config.apiKey = this.config.darkSkyApiKey;
+		}
+		// TODO: add a check to make sure the provider in this.config is actually a legit provider
+		this.provider = WBProviderManager.initialize(this.config, this);
 		this.scheduleUpdate(this.config.initialLoadDelay);
 	},
 
@@ -88,6 +96,8 @@ Module.register("WB-weather", {
 		}
 
 		// we should update the dom with the new update
+		this.weather = this.provider.weather;
+		this.error = this.provider.error;
 		this.updateDom();
 	},
 
@@ -98,8 +108,28 @@ Module.register("WB-weather", {
 		}
 
 		this.fetchTimer = setTimeout(() => {
-			this.provider.fetchWeather();
+			if (this.provider.usesNodeHelper) {
+				this.sendSocketNotification("FETCH_DATA", {providerName: this.provider.name, data: this.provider.dataForHelper()});
+			} else {
+				this.provider.fetchWeather();
+			}
 		}, nextFetch);
+	},
+
+	socketNotificationReceived: function(notification, payload) {
+		switch(notification) {
+			case "DATA_AVAILABLE":
+				// TODO: check if this helper response is for this instance of WB-weather
+				this.provider.helperResponse(payload);
+				break;
+		}
+	},
+
+	hasPre3Config: function() {
+		if (this.config.apiKey == null && this.config.darkSkyApiKey !==null) {
+			return true;
+		}
+		return false;
 	},
 
 	nunjucksEnvironment: function() {
