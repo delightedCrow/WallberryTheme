@@ -14,7 +14,7 @@
 				<div class="forecast__day">{{ day.date | dayLabel }}</div>
 			{% endif %}
 			<div class="forecast__icon"><i class="wi {{ day.wicon }}"></i></div>
-			<div class="forecast__rainchance"><i class="wi {{ day.precipType | precipIcons }}"></i>{{day.precipChance }}%</div>
+			<div class="forecast__rainchance"><i class="wi {{ day.precipType | precipIcons }}"></i>{{day.precipChance | round }}%</div>
 			<div class="forecast__highlow">{{ day.minTemp | round }}<i class="wi wi-degrees"></i> &middot; {{ day.maxTemp | round }}<i class="wi wi-degrees"></i></div>
 		</div>
 		{% endfor %}

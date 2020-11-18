@@ -58,8 +58,7 @@ class WBForecast {
 		*/
 		this.wicon = null;
 		/**
-		* The percentage chance of precipitation, in decimal form
-		* (eg: .97)
+		* The percentage chance of precipitation (0 to 100)
 		* @type {Number}
 		*/
 		this.precipChance = null;
