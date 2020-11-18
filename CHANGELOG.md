@@ -5,8 +5,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+Nothing yet :)
+
+## 3.0.0 - 2020-11-18
 ### Changed
-- WB-weather now uses openweathermap as its default weather provider (as DarkSky has been acquired by Apple and no longer available).
+- WB-weather now uses openweathermap as its default weather provider (as DarkSky has been acquired by Apple).
 - Changed WalberryTheme, WB-weather, and WB-clock to all use cached web templates in their nunjucks environments instead of requesting a new version from the server every time.
 
 ### Fixed
