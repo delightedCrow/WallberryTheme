@@ -5,32 +5,103 @@
  * MIT Licensed.
  */
 
- // TODO: Expand WBWeather's properties with some of the more common weather data info available
- // TODO: hella documentation of all these properties
+
+/**
+* A class representing current weather data.
+* @class
+*/
 class WBWeather {
 	constructor() {
-		this.forecast = null; // array of WBForecast objects
+		// TODO: Expand WBWeather's properties with some of the more common weather data info available
+
+		/**
+		* An array of WBForecast objects
+		* @type {Array}
+		*/
+		this.forecast = null;
+		/**
+		* The current temperature
+		* @type {Number}
+		*/
 		this.temp = null;
-		this.wicon = null; // https://erikflowers.github.io/weather-icons/
+		/**
+		* The name of the weather icon to be used for this weather
+		* See https://erikflowers.github.io/weather-icons/
+		* @type {String}
+		*/
+		this.wicon = null;
+		/**
+		* The long-form description of the current weather.
+		* @type {String}
+		*/
 		this.longDescription = null;
 	}
 }
 
+/**
+* A class representing forecasted weather data.
+* @class
+*/
 class WBForecast {
 	constructor() {
+		// TODO: Expand WBForecast's properties with some of the more common weather data info available
+
+		/**
+		* The of time the forecasted data (Unix, UTC)
+		* @type {Number}
+		*/
 		this.date = null;
+		/**
+		* The name of the weather icon to be used for this weather
+		* See https://erikflowers.github.io/weather-icons/
+		* @type {String}
+		*/
 		this.wicon = null;
+		/**
+		* The percentage chance of precipitation, in decimal form
+		* (eg: .97)
+		* @type {Number}
+		*/
 		this.precipChance = null;
+		/**
+		* Type of precipitation expected - either "snow" or "rain"
+		* @type {String}
+		*/
 		this.precipType = null;
+		/**
+		* The forecasted low temperature
+		* @type {Number}
+		*/
 		this.minTemp = null;
+		/**
+		* The forecasted high temperature
+		* @type {Number}
+		*/
 		this.maxTemp = null;
 	}
 }
 
+/**
+* A class representing an error.
+* @class
+*/
 class WBError {
 	constructor(isTemporary, description, delay) {
-		this.isTemporary = isTemporary; // boolean
-		this.description = description; //error message text
-		this.retryDelay = delay // milliseconds
+		/**
+		* If the error is temporary (true) or not (false)
+		* @type {Boolean}
+		*/
+		this.isTemporary = isTemporary;
+		/**
+		* The error message text
+		* @type {String}
+		*/
+		this.description = description;
+		/**
+		* The time delay before next fetch, in milliseconds
+		* (only used for temporary errors)
+		* @type {Number}
+		*/
+		this.retryDelay = delay;
 	}
 }

@@ -13,7 +13,8 @@ The WallberryTheme also comes packaged with two companion modules for displaying
 
 The [WB-weather](WB-weather/README.md) companion module has now been completely refactored with some great new features:
 
-- OpenWeatherMap is now the default weather provider (RIP DarkSky, you were taken too soon).
+- **OpenWeatherMap is now the default weather provider** (RIP DarkSky, you were taken too soon).
+- WB-weather **still supports DarkSky** as a provider for existing users with API keys, but expect the API to be shuttered officially by Apple by end of 2021.
 - New weather providers can be easily integrated by subclassing WB-weather's new `WBProvider` class.
 - New config option for choosing which display template to use, so you can easily change how the weather is displayed by adding new templates.
 
@@ -102,19 +103,14 @@ The following properties of `WallberryTheme` can be configured. For more informa
 | `addBackgroundFade`         | Array   | Adds darker gradient backgrounds to the top bar region and/or bottom bar regions of MagicMirror (helps with readability for bright or busy background images). <br><br> **Possible values:** `"top"` will add a gradient background to the top bar region, `"bottom"` will add a gradient background to the bottom bar region. Set to an empty list to remove all gradients.  <br>**Default value:** `["top", "bottom"]`
 | `clearCacheOnStart`         | Boolean | Clears Electron's cache on MagicMirror startup, preventing an issue where Electron would sometimes encounter a CORS error when trying to load a previously cached background image ([see this issue here for details](https://github.com/delightedCrow/WallberryTheme/issues/8)).  <br><br> **Possible values:** `true` (on) or `false` (off) <br>**Default value:** `true`
 
-## Changelog
-
-Visit the [Changelog file](CHANGELOG.md) to see the latest changes to the project :)
-
-## Attributions & Special Thanks
-
-- Thanks to the magnificent MagicMirror² community, y'all are creative and awesome <3
-- The light/dark detection functionality in [colorHelpers.js](colorHelpers.js) was taken from this wonderful [StackOverflow answer by ToniTornado](https://stackoverflow.com/questions/13762864/image-dark-light-detection-client-sided-script), and you can check out the [jsFiddle for it here](http://jsfiddle.net/s7Wx2/).
-- The color conversion functions in [colorHelpers.js](colorHelpers.js) were taken from the [colorsys](https://github.com/netbeast/colorsys) library by netbeast, and they saved me a great deal of time <3.
-
 ## Contributing
 
-Contributions of all kinds (pull requests, bug reports, feature suggestions, documentation, etc) are all welcome and encouraged. If you're enjoying the WallberryTheme and wanna make my day send me a pic or screenshot of your MagicMirror on the [MM forums](https://forum.magicmirror.builders/user/delightedcrow) or on [twitter](https://twitter.com/delightedCrow), I love seeing people's set ups :)
+Contributions of all kinds (pull requests, bug reports, feature suggestions, documentation, etc) are all welcome and encouraged.
+
+If you're enjoying the WallberryTheme and wanna make my day:
+
+* **:coffee: [Buy me a coffee](https://ko-fi.com/delightedcrow) :coffee:** and fuel my motivation for open source development ;)
+* Send me a screenshot of your MagicMirror on the [MM forums](https://forum.magicmirror.builders/user/delightedcrow) or on [twitter](https://twitter.com/delightedCrow).
 
 Huge thanks to everyone who has contributed and made the WallberryTheme better!
 
@@ -122,3 +118,13 @@ Huge thanks to everyone who has contributed and made the WallberryTheme better!
 - **Pull Requests should be submitted to the `dev` branch**
 - If there isn't one already, it's helpful to open an issue detailing the feature/bug your PR will address before you submit it.
 - Add a short description of your change to the [Changelog file](CHANGELOG.md) file under the `[Unreleased]` section.
+
+## Attributions & Special Thanks
+
+- Thanks to the magnificent MagicMirror² community, y'all are creative and awesome <3
+- The light/dark detection functionality in [colorHelpers.js](colorHelpers.js) was taken from this wonderful [StackOverflow answer by ToniTornado](https://stackoverflow.com/questions/13762864/image-dark-light-detection-client-sided-script), and you can check out the [jsFiddle for it here](http://jsfiddle.net/s7Wx2/).
+- The color conversion functions in [colorHelpers.js](colorHelpers.js) were taken from the [colorsys](https://github.com/netbeast/colorsys) library by netbeast, and they saved me a great deal of time <3.
+
+## Changelog
+
+Visit the [Changelog file](CHANGELOG.md) to see the latest changes to the project :)

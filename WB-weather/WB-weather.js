@@ -11,8 +11,8 @@ Module.register("WB-weather", {
 		template: "classic-wallberry",
 
 		apiKey: null, // REQUIRED
-		latitude: "", // REQUIRED
-		longitude: "", // REQUIRED
+		latitude: null, // REQUIRED
+		longitude: null, // REQUIRED
 
 		units: config.units, // "standard", "metric", "imperial"
 		language: config.language, // what language to localize for
@@ -24,6 +24,8 @@ Module.register("WB-weather", {
 
 	fetchTimer: null,
 	provider: null,
+	weather: null,
+	error: null,
 
 	getTranslations: function() {
 		return {
@@ -37,30 +39,34 @@ Module.register("WB-weather", {
 			"moment.js",
 			"WB-dataObjects.js",
 			"WB-provider.js",
-			this.file("providers/WB-" + provider.toLowerCase() + ".js")
+			this.file("providers/WB-" + provider + ".js")
 		];
 	},
 
 	getStyles: function() {
 		return [
 			"weather-icons.css",
-			this.file("css/" + this.config.template.toLowerCase() + ".css")
+			this.file("css/" + this.config.template + ".css")
 		];
 	},
 
 	getTemplate: function() {
-		return `templates/${this.config.template.toLowerCase()}.njk`;
+		return `templates/${this.config.template}.njk`;
 	},
 
 	getTemplateData: function() {
 		return {
-			weather: this.provider.weather,
-			error: this.provider.error
+			weather: this.weather,
+			error: this.error
 		};
 	},
 
 	start: function() {
 		Log.info(`Starting module: ${this.name}`);
+		// lower case helps eliminate user error in writing config options
+		this.config.providerName = this.config.providerName.toLowerCase();
+		this.config.template = this.config.template.toLowerCase();
+
 		this.addNunjuckFilters();
 
 		if (this.hasPre3Config()) {
@@ -68,9 +74,14 @@ Module.register("WB-weather", {
 			this.config.providerName = "darksky";
 			this.config.apiKey = this.config.darkSkyApiKey;
 		}
-		// TODO: add a check to make sure the provider in this.config is actually a legit provider
 		this.provider = WBProviderManager.initialize(this.config, this);
-		this.scheduleUpdate(this.config.initialLoadDelay);
+		if (this.provider == null) {
+			let message = `Cannot find a weather provider named "${this.config.providerName}". Please check your config settings.`
+			this.error = new WBError(false, message);
+			Log.error(message);
+		} else {
+			this.scheduleUpdate(this.config.initialLoadDelay);
+		}
 	},
 
 	suspend: function() {
@@ -119,13 +130,15 @@ Module.register("WB-weather", {
 	socketNotificationReceived: function(notification, payload) {
 		switch(notification) {
 			case "DATA_AVAILABLE":
-				// TODO: check if this helper response is for this instance of WB-weather
+				// TODO: check if this helper response is for this instance of WB-weather - pretty sure we can have multiple WB-weather instances but only one node_helper for all them.
 				this.provider.helperResponse(payload);
 				break;
 		}
 	},
 
 	hasPre3Config: function() {
+		// back before 3.0 DarkSky was the default provider and the
+		// config option for its api key was darkSkyApiKey
 		if (this.config.apiKey == null && this.config.darkSkyApiKey !==null) {
 			return true;
 		}
@@ -160,6 +173,7 @@ Module.register("WB-weather", {
 		}.bind(this));
 	},
 
+	// wi names for main precipitation types.
 	precipitationTypes: {
 		"snow": "wi-snowflake-cold",
 		"rain": "wi-raindrop"

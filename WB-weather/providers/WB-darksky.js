@@ -5,7 +5,7 @@
  * MIT Licensed.
  */
 
-class WBDarkSky extends WBProvider {
+class WBDarkSky extends WBProviderWithHelper {
 	constructor(config, delegate) {
 		super(config, delegate);
 		let unitConversions = {"imperial":"us", "metric":"si"};
@@ -17,15 +17,10 @@ class WBDarkSky extends WBProvider {
 		});
 	}
 
-	get usesNodeHelper() {
-		return true;
-	}
-
 	get updateIntervalLimit() {
 		return 10 * 60 * 1000; // 10 minutes
 	}
 
-	// how many days it's possible to get forecast for
 	get daysToForecastLimit() {
 		return 8;
 	}

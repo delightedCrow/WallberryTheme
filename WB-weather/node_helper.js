@@ -10,11 +10,8 @@ module.exports = NodeHelper.create({
 	},
 
 	socketNotificationReceived: function(notification, payload) {
-		console.log("NOTIFICATION!");
 		switch(notification) {
 			case "FETCH_DATA":
-				console.log("TOLD TO FETCH!");
-				console.log(payload);
 				this.fetchData(payload);
 			break;
 		}
