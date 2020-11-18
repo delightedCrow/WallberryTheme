@@ -56,7 +56,7 @@ class WBDarkSky extends WBProviderWithHelper {
 			f.precipType = ("precipType" in daily) ? daily.precipType : "rain";
 			f.minTemp = daily.temperatureHigh;
 			f.maxTemp = daily.temperatureLow;
-			f.wicon = `wi-${daily.icon}`;
+			f.wicon = `wi-forecast-io-${daily.icon}`;
 
 			return f;
 		});
