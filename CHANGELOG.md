@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 - WB-weather: Fixed issue with blank forecast weather icons showing up when using DarkSky provider.
 - Fixes [issue 29](https://github.com/delightedCrow/WallberryTheme/issues/29) of Wallberry not loading background images on start up due to a failure to clear the Electron Cache. WalberryTheme's node_helper.js has been updated to use the [Electron's newer promise API for session.clearCache()](https://github.com/electron/electron/pull/17185).
+- WB-weather: fixes [issue 31](https://github.com/delightedCrow/WallberryTheme/issues/31); floating elements now get cleared properly, so WB-weather elements now stay together as a unified block.
 
 ## 3.0.0 - 2020-11-18
 ### Changed

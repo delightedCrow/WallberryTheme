@@ -1,3 +1,15 @@
+.WB-weather .module-content .weather:before,
+.WB-weather .module-content .weather:after {
+  content: "";
+  display: table;
+}
+.WB-weather .module-content .weather:after {
+  clear: both;
+}
+.WB-weather .module-content .weather {
+  clear: both;
+}
+
 .weather__current {
   text-align: left;
   float: left;
