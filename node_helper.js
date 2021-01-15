@@ -10,10 +10,11 @@ module.exports = NodeHelper.create({
 				const win = BrowserWindow.getAllWindows()[0];
 				const ses = win.webContents.session;
 
-				ses.clearCache(() => {
+				ses.clearCache().then(() => {
 					console.log("Electron's cache successfully cleared.");
 					this.sendSocketNotification("ELECTRON_CACHE_CLEARED", {});
 				});
+
 			} catch (e) {
 				// We'll get a TypeError if MM is being run in server only mode because Electron won't be running the app - if that's the case we can just say the cache has been cleared and call it a day
 				if (e.name == "TypeError") {
