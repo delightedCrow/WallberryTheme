@@ -110,7 +110,7 @@ Contributions of all kinds (pull requests, bug reports, feature suggestions, doc
 If you're enjoying the WallberryTheme and wanna make my day:
 
 * **:coffee: [Buy me a coffee](https://ko-fi.com/delightedcrow) :coffee:** and fuel my motivation for open source development ;)
-* Send me a screenshot of your MagicMirror on the [MM forums](https://forum.magicmirror.builders/user/delightedcrow) or on [twitter](https://twitter.com/delightedCrow).
+* Post a screenshot of your MagicMirror running WallberryTheme in the [GitHub discussion](https://github.com/delightedCrow/WallberryTheme/discussions/categories/show-and-tell).
 
 Huge thanks to everyone who has contributed and made the WallberryTheme better!
 

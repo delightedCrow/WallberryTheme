@@ -127,7 +127,6 @@ Module.register("WallberryTheme", {
 	},
 
 	processPhoto: function(photoData) {
-		Log.info("Got Unsplash photo data: ", photoData);
 		var p = {};
 		if (this.config.resizeForScreen) {
 			p.url = photoData.urls.custom;
