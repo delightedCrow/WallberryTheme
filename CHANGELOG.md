@@ -5,6 +5,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+Nothing yet :)
+
+## 3.1.0 - 2021-3-4
 ### Fixed
 - Fixed [issue 35](https://github.com/delightedCrow/WallberryTheme/issues/35) of image not loading due to Unsplash API change.
 - Fixed [issue 33](https://github.com/delightedCrow/WallberryTheme/issues/33) showing incorrect documentation for WallberryTheme config.
