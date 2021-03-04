@@ -19,7 +19,10 @@ Module.register("WallberryTheme", {
 		brightImageOpacity: 0.85, // between 0 (black background) and 1 (visible opaque background), only used when autoDimOn is true
 		autoDimOn: true, // automatically darken bright images
 		addBackgroundFade: ["top", "bottom"], // adds fades for the top and bottom bar regions (leave an empty list to remove fades)
-		clearCacheOnStart: true // clear Electron's cache on MM start
+		clearCacheOnStart: true, // clear Electron's cache on MM start
+		imageWidth: "auto", // "auto" set width to screen, or specify a hardcoded width in pixels
+		imageHeight: "auto", // "auto" set height to screen, or specify a hardcoded height in pixels
+		imageOptions: "fit=crop" // see https://unsplash.com/documentation#dynamically-resizable-images
 	},
 
 	photoData: null,
@@ -78,12 +81,6 @@ Module.register("WallberryTheme", {
 			"&collections=" + this.config.collections +
 			"&orientation=" + this.config.orientation;
 
-		if (this.config.resizeForScreen) {
-			url = url +
-				"&w=" + window.innerWidth +
-				"&h=" + window.innerHeight;
-		}
-
 		if (this.config.queries.length > 0) {
 			let query = this.config.queries[Math.floor(Math.random() * this.config.queries.length)];
 
@@ -128,11 +125,13 @@ Module.register("WallberryTheme", {
 
 	processPhoto: function(photoData) {
 		var p = {};
-		if (this.config.resizeForScreen) {
-			p.url = photoData.urls.custom;
-		} else {
-			p.url = photoData.urls.full;
-		}
+		let width = this.config.imageWidth == "auto" ? window.innerWidth : this.config.imageWidth;
+		let height = this.config.imageHeight == "auto" ? window.innerHeight : this.config.imageHeight;
+
+		p.url = photoData.urls.raw +
+			"&w=" + width +
+			"&h=" + height +
+			"&" + this.config.imageOptions;
 
 		// Unsplash sends us a color swatch for the image
 		p.color = WBColor.rgb2Hsv(WBColor.hex2Rgb(photoData.color));
