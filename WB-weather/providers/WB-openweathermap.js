@@ -13,7 +13,7 @@ class WBOpenWeatherMap extends WBProvider {
 			"lon": config.longitude,
 			"appid": config.apiKey,
 			"units": config.units,
-			"language": config.language
+			"lang": config.language
 		});
 	}
 
