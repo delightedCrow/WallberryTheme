@@ -6,10 +6,10 @@
  */
 const fetch = require("node-fetch");
 
-module.exports = function(config) {
-	return fetch(config.url)
-		.then(res => res.json())
-		.catch(error => {
-			return {network_error: error};
-		});
+module.exports = function (config) {
+  return fetch(config.url)
+    .then((res) => res.json())
+    .catch((error) => {
+      return { network_error: error };
+    });
 };
