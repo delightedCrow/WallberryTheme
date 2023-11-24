@@ -71,6 +71,27 @@ Module.register("WallberryTheme", {
 		case "ELECTRON_CACHE_CLEARED":
 			this.fetchPhoto();
 			break;
+		case "FETCH_PHOTO":
+			this.fetchPhoto();
+			break;
+		}
+	},
+
+	notificationReceived(notification, payload, sender) {
+		switch(notification){
+			case "SHOW_ALERT":
+				if (payload.type === "notification") {
+					this.showNotification(payload);
+				} else {
+					this.showAlert(payload, sender);
+				}
+				break;
+			case "SHOW_ALERT":
+				this.hideAlert(sender);
+				break;
+			case "FETCH_PHOTO":
+				this.fetchPhoto();
+				break;
 		}
 
 	},
@@ -170,7 +191,7 @@ Module.register("WallberryTheme", {
 	resume: function() {
 		Log.info("Waking WallberryTheme...");
 		clearTimeout(this.fetchTimer);
-		this.fetchPhoto();
+		//this.fetchPhoto(); // Uncommented this to disable refresh upon resume. not necessarily needed to fetch every time
 	},
 
 	nunjucksEnvironment: function() {
