@@ -1,9 +1,11 @@
 # Module: WB-weather
+
 The `WB-weather` module was designed to complement the `WallberryTheme` module and displays the current weather and forecast. It uses [OpenWeatherMap](https://openweathermap.org/) as its default weather provider, but it can be easily configured to use other weather providers instead.
 
 ## Using the module
 
 To use this module, add it to the modules array in the `config/config.js` file:
+
 ````javascript
 modules: [
 	{
@@ -43,10 +45,10 @@ These general options should honored the same across all weather providers. Spec
 
 OpenWeatherMap is currently the default weather provider for WB-weather.
 
- * **Sign up for a free API key at [https://openweathermap.org/api](https://openweathermap.org/api)**.
- * Free accounts are limited to 60 API calls/minute.
- * **Minimum limit for updateInterval:** 10 minutes ([OpenWeatherMap suggests a limit](https://openweathermap.org/appid) of 1 API call every 10 minutes because their weather servers do not update weather any faster than that.)
- * **Maximum number of forecast days:** 8 days.
+* **Sign up for a free API key at [https://openweathermap.org/api](https://openweathermap.org/api)**.
+* Free accounts are limited to 60 API calls/minute.
+* **Minimum limit for updateInterval:** 10 minutes ([OpenWeatherMap suggests a limit](https://openweathermap.org/appid) of 1 API call every 10 minutes because their weather servers do not update weather any faster than that.)
+* **Maximum number of forecast days:** 8 days.
 
 #### OpenWeatherMap Configuration Options
 
@@ -74,17 +76,18 @@ modules: [
 	}
 ]
 ````
+
 -------------------------------
 
 ### DarkSky
 
 The original weather provider for the WallberryTheme.
 
- * [DarkSky was acquired by Apple](https://blog.darksky.net/) and **no longer allows sign ups for new API keys** :(
- * Support for users who already have API keys will continue through the **end of 2021**
- * Free accounts are limited to 1,000 API calls each day
- * **Minimum limit for updateInterval:** 10 minutes.
- * **Maximum number of forecast days:** 8 days.
+* [DarkSky was acquired by Apple](https://blog.darksky.net/) and **no longer allows sign ups for new API keys** :(
+* Support for users who already have API keys will continue through the **end of 2021**
+* Free accounts are limited to 1,000 API calls each day
+* **Minimum limit for updateInterval:** 10 minutes.
+* **Maximum number of forecast days:** 8 days.
 
 #### DarkSky Configuration Options
 
@@ -136,9 +139,9 @@ Sample Screenshot:
 
 **BEFORE** you submit your pull request:
 
-- Please read [The Contributing Section of the WallberryTheme README](../README.md#Contributing).
-- **If you add a Template**: include a section for your template under the  `Available Display Templates` header in this README with the appropriate documentation (see the classic-wallberry template above for an example). **Make sure you include a sample screenshot of your template.**
-- **If you add a Weather Provider**: include a section for your provider under the `Available Weather Providers` header in this README with appropriate documentation (see the openweathermap provider for above for an example).
+* Please read [The Contributing Section of the WallberryTheme README](../README.md#Contributing).
+* **If you add a Template**: include a section for your template under the  `Available Display Templates` header in this README with the appropriate documentation (see the classic-wallberry template above for an example). **Make sure you include a sample screenshot of your template.**
+* **If you add a Weather Provider**: include a section for your provider under the `Available Weather Providers` header in this README with appropriate documentation (see the openweathermap provider for above for an example).
 
 -------------------------------
 
@@ -153,17 +156,16 @@ All weather providers are located in the `WB-weather/providers/` directory and s
 
 ### Provider Naming Conventions
 
-- Choose a short name for your provider, such as `myprovider`, that users will use in the `providerName` option in their module config file.
-- **Make sure your providerName is LOWER CASE.**
-- Name your provider's javascript file `WB-{myprovider}.js`, with `{myprovider}` being your `providerName`.
-- If you're implementing `WBProviderWithHelper`, the .js file for your helper function should be named `WB-{myprovider}-helper.js`.
+* Choose a short name for your provider, such as `myprovider`, that users will use in the `providerName` option in their module config file.
+* **Make sure your providerName is LOWER CASE.**
+* Name your provider's javascript file `WB-{myprovider}.js`, with `{myprovider}` being your `providerName`.
+* If you're implementing `WBProviderWithHelper`, the .js file for your helper function should be named `WB-{myprovider}-helper.js`.
 
 ### Implementing WBProvider
 
 Subclassing `WBProvider` is the simplest way to add a new weather provider.
 
 * **Don't forget** to register your provider class with `WBProviderManager` at the end of your file!
-
 
 ````javascript
 class WBMyProvider extends WBProvider {
@@ -208,7 +210,7 @@ Most APIs have limits on how often users should call their APIs. Setting this ex
 
 ````javascript
 get updateIntervalLimit() {
-	return 10 * 60 * 1000; // 10 minutes
+ return 10 * 60 * 1000; // 10 minutes
 }
 
 ````
@@ -221,7 +223,7 @@ Most weather providers will only supply forecasts up to so many days. Set the ma
 
 ````javascript
 get daysToForecastLimit() {
-	return 8;
+ return 8;
 }
 
 ````
@@ -270,7 +272,6 @@ The data classes in `Wb-DataObjects.js`, specifically `WBWeather` and `WBForecas
 
 * Your provider should attempt to fill in as much data as it can for the documented properties of these objects. **The more data you fill in, the more likely it is for your provider to work with multiple display templates.**
 * Your provider can add custom properties to these objects, but remember that it's up to the templates to support them.
-
 
 ### Implementing WBProviderWithHelper
 
@@ -349,16 +350,16 @@ See the [classic-wallberry.njk](templates/classic-wallberry.njk) template as an 
 
 Templates can expect to have two named variables exposed to them by WB-weather:
 
-- **`weather`** - this object holds all the weather data
-	- if there is no weather data, value will be `null`
-	- if there is data, value be a [`WBWeather` object](WB-dataObjects.js) populated with weather data by a weather provider.
-- **`error`** - this object holds error data if there was a problem fetching the weather
-	- if there were no errors, value will be `null`
-	- if there are errors, value will be a [`WBError` object](WB-dataObjects.js) populated with error data
+* **`weather`** - this object holds all the weather data
+ 	* if there is no weather data, value will be `null`
+ 	* if there is data, value be a [`WBWeather` object](WB-dataObjects.js) populated with weather data by a weather provider.
+* **`error`** - this object holds error data if there was a problem fetching the weather
+ 	* if there were no errors, value will be `null`
+ 	* if there are errors, value will be a [`WBError` object](WB-dataObjects.js) populated with error data
 
 #### Template Naming Conventions
 
- * Choose a short, unique name for your template, such as `mytemplate`, that users will use in the `template` option in their module config file.
- * **Make sure your template name is all LOWER CASE.**
- * Use the same name for your template's .njk file, (e.g. `mytemplate.njk`).
- * If you have CSS to go along with your template, add a css file in `WB-weather/css` with the same name as your template (e.g. `mytemplate.css`).
+* Choose a short, unique name for your template, such as `mytemplate`, that users will use in the `template` option in their module config file.
+* **Make sure your template name is all LOWER CASE.**
+* Use the same name for your template's .njk file, (e.g. `mytemplate.njk`).
+* If you have CSS to go along with your template, add a css file in `WB-weather/css` with the same name as your template (e.g. `mytemplate.css`).
