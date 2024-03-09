@@ -75,7 +75,7 @@ Module.register("WallberryTheme", {
 
 	},
 
-	fetchPhoto: function() {
+	fetchPhoto: async function() {
 		var url = "https://api.unsplash.com/photos/random?" +
 			"client_id=" + this.config.unsplashAccessKey +
 			"&collections=" + this.config.collections +
@@ -89,29 +89,24 @@ Module.register("WallberryTheme", {
 		}
 
 		this.photoError = null;
-		var req = new XMLHttpRequest();
 		var mod = this;
 
-		req.addEventListener("load", function() {
-			const unsplashData = JSON.parse(this.responseText);
-			if (this.status === 200) {
+		try {
+			const response = await fetch(url, { headers: { 'Accept-Version': 'v1' } });
+			const unsplashData = await response.json();
+
+			if (response.ok) {
 				mod.processPhoto(unsplashData);
 			} else if ("errors" in unsplashData) {
 				mod.processError(`The Unsplash API returned the error "${unsplashData["errors"].join(", ")}"`);
 			} else {
-				mod.processError(`Unsplash Error: ${this.status}, ${this.statusText}`);
-				Log.error("Unsplash Error: ", this.responseText);
+				mod.processError(`Unsplash Error: ${response.status}, ${response.statusText}`);
+				Log.error("Unsplash Error: ", unsplashData);
 			}
-		});
-
-		req.addEventListener("error", function() {
+		} catch (error) {
 			// most likely an internet connection issue
 			mod.processError("Could not connect to the Unsplash server.");
-		});
-
-		req.open("GET", url);
-		req.setRequestHeader("Accept-Version", "v1");
-		req.send();
+		}
 	},
 
 	processError: function(errorText) {
