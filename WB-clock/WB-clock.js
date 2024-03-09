@@ -1,4 +1,4 @@
-/* Magic Mirror - WallberryTheme <3
+/* MagicMirror² - WallberryTheme <3
  * Module: WB-clock
  *
  * By JSC (@delightedCrow)

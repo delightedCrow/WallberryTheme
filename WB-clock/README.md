@@ -1,9 +1,11 @@
 # Module: WB-clock
+
 The `WB-clock` module is a digital clock designed to complement the `WallberryTheme` module. It displays the local time and date, and can display the local time for as many other locales as you care to configure.
 
 ## Using the module
 
 To use this module, add it to the modules array in the `config/config.js` file:
+
 ````javascript
 modules: [
 	{

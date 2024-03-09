@@ -1,6 +1,7 @@
 
 # WallberryTheme: A MagicMirror² Module
-The `WallberryTheme` module re-themes [MagicMirror²](https://github.com/MichMich/MagicMirror) to look like a beautiful photo-box wall display. It adds a new font, styles, and periodically changing background image pulled from Unsplash.com.
+
+The `WallberryTheme` module re-themes [MagicMirror²](https://github.com/MagicMirrorOrg/MagicMirror) to look like a beautiful photo-box wall display. It adds a new font, styles, and periodically changing background image pulled from Unsplash.com.
 
 The WallberryTheme also comes packaged with two companion modules for displaying the time (`WB-clock`) and weather (`WB-weather`).
 
@@ -18,10 +19,10 @@ The [WB-weather](WB-weather/README.md) companion module has now been completely 
 - New weather providers can be easily integrated by subclassing WB-weather's new `WBProvider` class.
 - New config option for choosing which display template to use, so you can easily change how the weather is displayed by adding new templates.
 
-
  Go check out the details in [WB-weather's README](WB-weather/README.md).
 
 ## Screenshots
+
 <p align="center">
 <img style="flat: left; width: 50%;" src="screenshots/wb-screen1.jpg">
 <img style="float: left; width: 50%;" src="screenshots/wb-screen2.jpg">
@@ -31,7 +32,7 @@ The [WB-weather](WB-weather/README.md) companion module has now been completely 
 
 WallberryTheme has new options for dealing with light text on bright background images!
 
-- The `addBackgroundFade` option allows you to add soft gradient backgrounds to the top and bottom regions of your magic mirror, providing more contrast for the modules in those regions. These gradients use Unsplash's color data to automatically shift to the general color hue of the photo, so they blend better with the image.
+- The `addBackgroundFade` option allows you to add soft gradient backgrounds to the top and bottom regions of your MagicMirror, providing more contrast for the modules in those regions. These gradients use Unsplash's color data to automatically shift to the general color hue of the photo, so they blend better with the image.
 
 - The `autoDimOn` feature auto-detects bright images and automatically dims them, ensuring bright images don't wash out your text and dark images remain vibrant.
 
@@ -44,8 +45,9 @@ WallberryTheme has new options for dealing with light text on bright background 
 ## Using the module
 
 To use this module and its companion modules:
-1.  Copy the `WallberryTheme` folder to your `MagicMirror/modules` directory
-2.  Add the modules to the modules array in the `config/config.js` file like in the following example:
+
+1. Copy the `WallberryTheme` folder to your `MagicMirror/modules` directory
+2. Add the modules to the modules array in the `config/config.js` file like in the following example:
 
 ````javascript
 modules: [
@@ -65,8 +67,8 @@ modules: [
     config: {
       localCityName: "Seattle", // optional
       otherCities: [
-      	{name: "DC", timezone: "US/Eastern"}, // optional
-      	{name: "Anchorage", timezone: "US/Alaska"} // optional
+        {name: "DC", timezone: "US/Eastern"}, // optional
+        {name: "Anchorage", timezone: "US/Alaska"} // optional
       ]
     }
   },
@@ -87,7 +89,6 @@ modules: [
 ## Configuration options
 
 The following properties of `WallberryTheme` can be configured. For more information on how to configure the [WB-clock](WB-clock/README.md) and [WB-weather](WB-weather/README.md) modules see their individual README files.
-
 
 | Option                      | Type    | Description
 | ----------------------------|---------| ----------------
@@ -111,12 +112,13 @@ Contributions of all kinds (pull requests, bug reports, feature suggestions, doc
 
 If you're enjoying the WallberryTheme and wanna make my day:
 
-* **:coffee: [Buy me a coffee](https://ko-fi.com/delightedcrow) :coffee:** and fuel my motivation for open source development ;)
-* Post a screenshot of your MagicMirror running WallberryTheme in the [GitHub discussion](https://github.com/delightedCrow/WallberryTheme/discussions/categories/show-and-tell).
+- **:coffee: [Buy me a coffee](https://ko-fi.com/delightedcrow) :coffee:** and fuel my motivation for open source development ;)
+- Post a screenshot of your MagicMirror running WallberryTheme in the [GitHub discussion](https://github.com/delightedCrow/WallberryTheme/discussions/categories/show-and-tell).
 
 Huge thanks to everyone who has contributed and made the WallberryTheme better!
 
 ### Guidelines for Pull Requests
+
 - **Pull Requests should be submitted to the `dev` branch**
 - If there isn't one already, it's helpful to open an issue detailing the feature/bug your PR will address before you submit it.
 - Add a short description of your change to the [Changelog file](CHANGELOG.md) file under the `[Unreleased]` section.
