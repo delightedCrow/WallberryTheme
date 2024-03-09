@@ -1,0 +1,28 @@
+{
+  "name": "wallberrytheme",
+  "version": "1.0.0",
+  "description": "Re-themes MagicMirror² to look like a beautiful digital photo wall display.",
+  "main": "WallberryTheme.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/delightedCrow/WallberryTheme.git"
+  },
+  "keywords": [
+    "MagicMirror",
+    "Wallberry",
+    "theme",
+    "clock",
+    "weather",
+    "unsplash",
+    "background"
+  ],
+  "author": "delightedCrow",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/delightedCrow/WallberryTheme/issues"
+  },
+  "homepage": "https://github.com/delightedCrow/WallberryTheme#readme"
+}
