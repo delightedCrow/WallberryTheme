@@ -320,11 +320,9 @@ You'll also need to write a helper file for the node_helper.js to call. This fil
 
 For example:
 
+```javascript
+// helper code should be in your WB-myProvider-helper.js file
 
-````javascript
-//helper code should be in your WB-myProvider-helper.js file
-
-const fetch = require("node-fetch");
 // the data argument passed here will be from your dataForHelper() function
 module.exports = function(data) {
 	// the results of this promise will be passed
@@ -335,7 +333,7 @@ module.exports = function(data) {
 			return {network_error: error};
 		});
 };
-````
+```
 
 -------------------------------
 
