@@ -19,7 +19,7 @@ Are you getting any error messages? Make sure to check for errors in the javascr
 // PASTE ERROR MESSAGES HERE
 ````
 
-**Please include your Magic Mirror config.js:**
+**Please include your MagicMirror config.js:**
 You don't have to add the whole file, but at least add the config sections for the modules you're having trouble with. **REMEMBER TO REDACT ANY API KEYS**
 
 ````javascript

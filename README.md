@@ -31,7 +31,7 @@ The [WB-weather](WB-weather/README.md) companion module has now been completely 
 
 WallberryTheme has new options for dealing with light text on bright background images!
 
-- The `addBackgroundFade` option allows you to add soft gradient backgrounds to the top and bottom regions of your magic mirror, providing more contrast for the modules in those regions. These gradients use Unsplash's color data to automatically shift to the general color hue of the photo, so they blend better with the image.
+- The `addBackgroundFade` option allows you to add soft gradient backgrounds to the top and bottom regions of your MagicMirror, providing more contrast for the modules in those regions. These gradients use Unsplash's color data to automatically shift to the general color hue of the photo, so they blend better with the image.
 
 - The `autoDimOn` feature auto-detects bright images and automatically dims them, ensuring bright images don't wash out your text and dark images remain vibrant.
 
